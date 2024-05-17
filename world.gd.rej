@@ -1,0 +1,19 @@
+diff a/world.gd b/world.gd	(rejected hunks)
+@@ -1,14 +1,14 @@
+ extends Node2D
+ 
+ 
+-@onready var floor: TileMap = $floor
++@onready var map: TileMap = $map
+ @onready var player_camera: Camera2D = $CharacterBody2D/Player_camera
+ 
+ 
+ # Called when the node enters the scene tree for the first time.
+ func _ready() -> void:
+-	var mapBound: Rect2i = floor.get_used_rect()
+-	var tileSize: Vector2i = floor.tile_set.tile_size
++	var mapBound: Rect2i = map.get_used_rect()
++	var tileSize: Vector2i = map.tile_set.tile_size
+ 	player_camera.limit_top = mapBound.position.y * tileSize.y
+ 	player_camera.limit_bottom = mapBound.end.y * tileSize.y
+ 	player_camera.limit_left = mapBound.position.x * tileSize.x
