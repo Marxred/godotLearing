@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://ceg05gjjlsjwt"]
+
+[ext_resource type="Texture2D" uid="uid://bg4g8jppro0xs" path="res://Tree-Assets.png" id="1_owpo0"]
+[ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player_body_2d.tscn" id="2_3g44t"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4u2k3"]
+texture = ExtResource("1_owpo0")
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:2/0 = 0
+1:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:2/0/physics_layer_0/angular_velocity = 0.0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSet" id="TileSet_hk7nt"]
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_4u2k3")
+
+[node name="World" type="Node2D"]
+
+[node name="floor" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_hk7nt")
+format = 2
+layer_0/tile_data = PackedInt32Array(720897, 65536, 2, 720898, 65536, 2, 720899, 65536, 2, 720900, 65536, 2, 786436, 65536, 2, 786437, 65536, 2, 786438, 65536, 2, 786439, 65536, 2, 786440, 65536, 2, 786441, 65536, 2, 786442, 65536, 2, 786443, 65536, 2, 786444, 65536, 2, 786445, 65536, 2, 786446, 65536, 2, 720910, 65536, 2, 720911, 65536, 2, 655375, 65536, 2, 655376, 65536, 2, 589840, 65536, 2, 524304, 65536, 2, 458769, 65536, 2, 458770, 65536, 2, 524306, 65536, 2, 524307, 65536, 2, 589843, 65536, 2, 655379, 65536, 2, 655380, 65536, 2, 720916, 65536, 2, 655361, 65536, 1, 655362, 65536, 1, 655363, 65536, 1, 655364, 65536, 1, 655365, 65536, 1, 720901, 65536, 2, 720902, 65536, 1, 720903, 65536, 1, 720904, 65536, 1, 720905, 65536, 1, 720906, 65536, 1, 720907, 65536, 1, 720908, 65536, 1, 720909, 65536, 1, 655374, 65536, 1, 589838, 65536, 1, 589839, 65536, 1, 524303, 65536, 1, 458768, 65536, 1, 720917, 65536, 1, 720918, 65536, 1, 720919, 65536, 1, 720920, 65536, 1, 720921, 65536, 1, 720922, 65536, 1, 720923, 65536, 1, 655360, 65536, 1, 393224, 65536, 1, 393225, 65536, 1, 458760, 65536, 2, 458761, 65536, 2, 458762, 65536, 1, 458759, 65536, 2, 393223, 65536, 1, 655373, 65536, 1, 458763, 65536, 1, 720895, 65536, 2, 655359, 65536, 2, 589823, 65536, 2, 524287, 65536, 2, 458751, 65536, 2, 393215, 65536, 2, 327679, 65536, 2, 262143, 65536, 2, 196607, 65536, 2, 131071, 65536, 2, 65535, 65536, 2, 655383, 65536, 2, 589847, 65536, 2, 524311, 65536, 2, 458775, 65536, 2, 393239, 65536, 2, 327703, 65536, 2, 262167, 65536, 2, 196631, 65536, 2, 131095, 65536, 2, 65559, 65536, 2, 23, 65536, 2)
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("2_3g44t")]
+position = Vector2(61, 61)
+RUN_ACC = 1.0
