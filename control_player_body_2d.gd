@@ -39,9 +39,9 @@ func _physics_process(delta: float) -> void:
 		animation_PlayerStates.play("jumping")
 	if not is_zero_approx(direction):
 		sprite_Player.set_flip_h(direction < 0)
-
-#输出
-	print("delta", delta," direction", direction, " velocity",velocity)
-	print("move_and_slide ",
 	move_and_slide()
-	)
+#输出
+#	print("delta", delta," direction", direction, " velocity",velocity)
+#	print("move_and_slide ",
+#	move_and_slide()
+#	)
