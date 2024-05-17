@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://8v58fna12xu7"]
 
-[ext_resource type="Script" path="res://Node2D.gd" id="1_88ch8"]
+[ext_resource type="Script" path="res://node_2d.gd" id="1_ty14j"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_88ch8")
+script = ExtResource("1_ty14j")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
