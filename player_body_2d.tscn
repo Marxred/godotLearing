@@ -79,3 +79,10 @@ root_node = NodePath("../hitbox")
 libraries = {
 "": SubResource("AnimationLibrary_ayu57")
 }
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="JumpRequestTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true

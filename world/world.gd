@@ -2,7 +2,7 @@ extends Node2D
 
 
 @onready var map: TileMap = $map
-@onready var player_camera: Camera2D = $CharacterBody2D/Player_camera
+@onready var player_camera: Camera2D = $Player2D/Player_camera
 
 
 # Called when the node enters the scene tree for the first time.

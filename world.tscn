@@ -706,10 +706,10 @@ layer_1/tile_data = PackedInt32Array(262154, 393216, 0, 196618, 393216, 1, 26215
 layer_2/name = "Foreground"
 layer_2/tile_data = PackedInt32Array(851974, 589824, 3, 851976, 589824, 2, 851977, 458752, 3, 851978, 524288, 2, 851980, 589824, 3, 720911, 589824, 2, 131080, 458752, 3, 131081, 655360, 2, 917500, 589824, 2, 917502, 589824, 3, 851970, 655360, 2, 524324, 655360, 2, 524323, 524288, 3, 131094, 458752, 3, 327708, 458752, 3, 262171, 655360, 2, -65516, 524288, 3, -65520, 589824, 2, 65549, 589824, 2, 2, 524288, 2, 655390, 524288, 2, 655391, 589824, 3, 786458, 655360, 2, 786454, 393216, 3)
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_3g44t")]
+[node name="Player2D" parent="." instance=ExtResource("2_3g44t")]
 position = Vector2(-58, 189)
 
-[node name="Player_camera" type="Camera2D" parent="CharacterBody2D"]
+[node name="Player_camera" type="Camera2D" parent="Player2D"]
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
