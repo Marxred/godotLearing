@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://bx3xmo2otglfh"]
+[gd_scene load_steps=12 format=3 uid="uid://bx3xmo2otglfh"]
 
 [ext_resource type="Script" path="res://player/control_player_body_2d.gd" id="1_prgbp"]
 [ext_resource type="Texture2D" uid="uid://tty0nae58ms6" path="res://player/char_blue_1.png" id="1_xn5v0"]
 [ext_resource type="Animation" uid="uid://dhqbdwvo7icx4" path="res://player/player_animation/player_idle.res" id="3_at5vp"]
 [ext_resource type="Animation" uid="uid://dtgesqtus4chs" path="res://player/player_animation/player_jumping.res" id="4_ee21t"]
 [ext_resource type="Animation" uid="uid://drhd8s8apr6w4" path="res://player/player_animation/player_runing.res" id="5_qt82u"]
+[ext_resource type="Animation" uid="uid://cxwypubbwgqwl" path="res://player/player_animation/player_landing.res" id="6_7npjk"]
+[ext_resource type="Animation" uid="uid://c0urhgp3ulwts" path="res://player/player_animation/player_falling.res" id="7_nsblr"]
+[ext_resource type="Script" path="res://classes/StateMachine.gd" id="8_k13mb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ouyye"]
 size = Vector2(10, 28)
@@ -48,16 +51,27 @@ tracks/2/keys = {
 "update": 1,
 "values": [0]
 }
-
-[sub_resource type="Animation" id="Animation_kkv6c"]
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Sprite_Player:vframes")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ayu57"]
 _data = {
 "RESET": SubResource("Animation_na4h4"),
+"falling": ExtResource("7_nsblr"),
 "idle": ExtResource("3_at5vp"),
 "jumping": ExtResource("4_ee21t"),
-"runing": ExtResource("5_qt82u"),
-"test": SubResource("Animation_kkv6c")
+"landing": ExtResource("6_7npjk"),
+"runing": ExtResource("5_qt82u")
 }
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
@@ -86,3 +100,6 @@ one_shot = true
 [node name="JumpRequestTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("8_k13mb")
