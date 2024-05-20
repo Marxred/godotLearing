@@ -114,10 +114,10 @@ _data = {
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 script = ExtResource("1_prgbp")
-metadata/_edit_horizontal_guides_ = [-28.0]
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("8_k13mb")
+engine_time_scale = 0.5
 
 [node name="Graphic2D" type="Node2D" parent="."]
 

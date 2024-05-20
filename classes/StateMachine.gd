@@ -1,19 +1,18 @@
 class_name StateMachine
 extends Node
 
-
+@export var engine_time_scale: float = 1
 var current_state: int = -1:
 	set(v):
+		#print("state from ",owner.State.find_key(current_state)," to ", owner.State.find_key(v))
 		owner.transition_state(current_state, v)
 		current_state = v
 
 
 func _ready() -> void:
-	print("current_state", current_state)
 	await owner.ready
 	current_state = 0
-	print("current_state", current_state)
-	#Engine.set_time_scale(0.5)
+	Engine.set_time_scale(engine_time_scale)
 
 
 func _physics_process(delta: float) -> void:
