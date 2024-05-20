@@ -7,12 +7,13 @@ enum State{
 	JUMPING,
 	FALLING,
 	LANDING,
+	WALL_SLIDING,
 }
 const GROUND_STATES : Array[State] =[State.IDLE, State.RUNING, State.LANDING]
 const FLOOR_ACCELERATE_TIME : float = 0.1
 const AIR_ACCELERATE_TIME : float = 0.02
 const COYOTE_TIME: float = 0.1
-const JUMP_REQUEST_TIME: float = 0.2#不能太小，会导致无法起跳；极大数无影响，极小数有影响
+const JUMP_REQUEST_TIME: float = .1#不能太小，会导致无法起跳；极大数无影响，极小数有影响
 
 #初始化参数
 @export var JUMP_SPEED: float = -300.0
@@ -23,10 +24,12 @@ var FLOOR_ACCELERATION : float = RUN_SPEED_MAX / FLOOR_ACCELERATE_TIME
 var AIR_ACCELERATION : float = RUN_SPEED_MAX / AIR_ACCELERATE_TIME
 
 #初始化资源
-@onready var sprite_player: Sprite2D = $Sprite_Player
-@onready var animation_playerStates: AnimationPlayer = $Animation_PlayerStates
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_request_timer: Timer = $JumpRequestTimer
+@onready var graphic_2d: Node2D = $Graphic2D
+@onready var animation_playerStates: AnimationPlayer = $Animation_PlayerStates
+@onready var hand_checker: RayCast2D = $Graphic2D/HandChecker
+@onready var foot_checker: RayCast2D = $Graphic2D/FootChecker
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -40,6 +43,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func tick_physics(state: State, delta: float) -> void:
+	print("hand_checker.is_colliding() ", hand_checker.is_colliding())
+	print("foot_checker.is_colliding() ", foot_checker.is_colliding())
+	#print(is_on_floor(), ' ', is_on_wall())
 	match state:
 		State.IDLE:
 			move(default_gravity, delta)
@@ -55,7 +61,10 @@ func tick_physics(state: State, delta: float) -> void:
 			
 		State.LANDING:
 			move(default_gravity, delta)
-		
+			
+		State.WALL_SLIDING:
+			move(default_gravity / 5.0, delta)
+			graphic_2d.scale.x = get_wall_normal().x
 	is_first_tick = false
 
 
@@ -65,11 +74,11 @@ func move(gravity: float, delta: float)-> void:
 	var direction = Input.get_axis("move_left","move_right")
 	velocity.x = move_toward(velocity.x, RUN_SPEED_MAX * direction, acceleration * delta)#x方向移动
 	velocity.y += gravity * delta#y方向移动
-	if is_first_tick:
-		print(velocity.y)
-	
+	#
+	#if is_first_tick:
+		#print(velocity.y)
 	if not is_zero_approx(direction):#翻转图像
-		sprite_player.set_flip_h(direction < 0)
+		graphic_2d.scale.x = -1 if direction < 0.0 else 1 
 #
 	#print("delta", delta," direction", direction, " velocity",velocity)#输出
 	#print("move_and_slide ",
@@ -106,11 +115,18 @@ func get_next_state(state: State)-> State:
 		State.FALLING:
 			if is_on_floor():
 				return State.LANDING
+			if is_on_wall() and hand_checker.is_colliding() and foot_checker.is_colliding():
+				return State.WALL_SLIDING
 			
 		State.LANDING:
 			if not animation_playerStates.is_playing() or not is_still:
 				return State.IDLE
-	
+			
+		State.WALL_SLIDING:
+			if is_on_floor():
+				return State.IDLE
+			if not is_on_wall():
+				return State.FALLING
 	return state
 
 
@@ -140,10 +156,11 @@ func transition_state(from: State, to: State)-> void:
 				
 		State.LANDING:
 			animation_playerStates.play("landing")
-	
+			
+		State.WALL_SLIDING:
+			animation_playerStates.play("wall_sliding")
+			#graphic_2d.scale.x = get_wall_normal().x
 	is_first_tick = true
-
-
 
 
 
