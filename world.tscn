@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://ceg05gjjlsjwt"]
+[gd_scene load_steps=8 format=3 uid="uid://ceg05gjjlsjwt"]
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_5u68t"]
 [ext_resource type="Texture2D" uid="uid://bg4g8jppro0xs" path="res://world/Tree-Assets.png" id="1_owpo0"]
 [ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player_body_2d.tscn" id="2_3g44t"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="4_ko2pc"]
 [ext_resource type="Texture2D" uid="uid://cb0s3sfkikkhp" path="res://assets/Trees/Background.png" id="5_gmlur"]
-[ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar.tscn" id="6_nccgp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4u2k3"]
 texture = ExtResource("1_owpo0")
@@ -722,9 +721,3 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 editor_draw_limits = true
 editor_draw_drag_margin = true
-
-[node name="Boar" parent="." instance=ExtResource("6_nccgp")]
-position = Vector2(465, 202)
-
-[node name="Boar2" parent="." instance=ExtResource("6_nccgp")]
-position = Vector2(574, 136)
