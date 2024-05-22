@@ -1,6 +1,6 @@
 extends Node2D
 
-
+@export var engine_time_scale: float = 1
 @onready var map: TileMap = $map
 @onready var player_camera: Camera2D = $Player2D/Player_camera
 
@@ -18,6 +18,7 @@ func _ready() -> void:
 		player_camera.limit_bottom," ",
 		player_camera.limit_left," ",
 		player_camera.limit_right)
+	Engine.set_time_scale(engine_time_scale)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass

@@ -12,8 +12,6 @@ var state_time:float = 0
 func _ready() -> void:
 	await owner.ready
 	current_state = 0
-	Engine.set_time_scale(owner.engine_time_scale)
-
 
 func _physics_process(delta: float) -> void:
 	while true:

@@ -113,6 +113,7 @@ _data = {
 }
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_prgbp")
 metadata/_edit_horizontal_guides_ = [-28.0]
 

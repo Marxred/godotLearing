@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgvdkbr7jgm3t"]
+
+[ext_resource type="Script" path="res://enemies/enemy.gd" id="1_kox2r"]
+[ext_resource type="Script" path="res://classes/StateMachine.gd" id="2_vpvpd"]
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_kox2r")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_vpvpd")
+
+[node name="Graphic" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Graphic"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

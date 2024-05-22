@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnyb4uqo7v6eg"
-path="res://.godot/imported/Tree-Assets.png-5bfcc417118ad94251ce7df147850765.ctex"
+uid="uid://cdjtayugm1ft4"
+path="res://.godot/imported/Idle-Sheet.png-19d76bf0ec0a76983e0d35239573f129.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Tree-Assets.png"
-dest_files=["res://.godot/imported/Tree-Assets.png-5bfcc417118ad94251ce7df147850765.ctex"]
+source_file="res://assets/Enemies/Boar/Idle-Sheet.png"
+dest_files=["res://.godot/imported/Idle-Sheet.png-19d76bf0ec0a76983e0d35239573f129.ctex"]
 
 [params]
 

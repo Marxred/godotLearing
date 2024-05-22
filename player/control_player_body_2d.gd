@@ -17,7 +17,6 @@ const COYOTE_TIME: float = 0.1
 const JUMP_REQUEST_TIME: float = .1#不能太小，会导致无法起跳；极大数无影响，极小数有影响
 
 #初始化参数
-@export var engine_time_scale: float = 1
 @export var JUMP_SPEED: float = -300.0
 @export var RUN_SPEED_MAX : float= 180.0
 @export var WALL_JUMP_SPEED: Vector2 = Vector2(250.0, -200.0)
@@ -45,52 +44,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		if velocity.y < JUMP_SPEED /2.0:
 			velocity.y = JUMP_SPEED /2.0
 
-#状态的物理帧
-func tick_physics(state: State, delta: float) -> void:
-	match state:
-		State.IDLE:
-			move(default_gravity, delta)
-			
-		State.RUNING:
-			move(default_gravity, delta)
-			
-		State.JUMPING:
-			move(0.0 if is_first_tick else default_gravity, delta)
-			
-		State.FALLING:
-			move(default_gravity, delta)
-			
-		State.LANDING:
-			move(default_gravity, delta)
-			
-		State.WALL_SLIDING:
-			move_without_input(default_gravity / 1000.0, delta)
-			
-		State.WALL_JUMPING:
+func can_wall_sliding()-> bool:
+	return is_on_wall() and hand_checker.is_colliding() and foot_checker.is_colliding() and Input.is_action_pressed("catch_wall")
 
-			move(0.0 if is_first_tick else default_gravity, delta)
-			
-	is_first_tick = false
+func should_jump()-> bool:
+	var can_jump : bool = is_on_floor() or coyote_timer.time_left
+	var should_jump : bool = can_jump and jump_request_timer.time_left
+	return should_jump
 
-
-#玩家移动设定
-func move(gravity: float, delta: float)-> void:
-	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
-	var direction = Input.get_axis("move_left","move_right")
-	velocity.x = move_toward(velocity.x, RUN_SPEED_MAX * direction, acceleration * delta)#x方向移动
-	velocity.y += gravity * delta#y方向移动
-	if not is_zero_approx(direction):#翻转图像
-		graphic_2d.scale.x = -1 if direction < 0.0 else 1 
-	move_and_slide()
-
-#忽略玩家输入的移动
-func move_without_input(gravity: float, delta: float)-> void:
-	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
-	velocity.y += gravity * delta#y方向移动
-	move_and_slide()
-
-
-#状态变换
+#状态变换判断
 func get_next_state(state: State)-> State:
 	if should_jump(): return State.JUMPING
 	var direction: float = Input.get_axis("move_left","move_right")
@@ -142,7 +104,7 @@ func get_next_state(state: State)-> State:
 	return state
 
 
-#状态转换函数
+#状态转换函数，进行状态的初始化
 func transition_state(from: State, to: State)-> void:
 	if from in GROUND_STATES and to in GROUND_STATES:
 		coyote_timer.stop()
@@ -181,19 +143,63 @@ func transition_state(from: State, to: State)-> void:
 			jump_request_timer.stop()
 	is_first_tick = true
 
-	print(Engine.get_physics_frames(), " << from %s to %s >> " % [
-		State.keys()[from] if from >= 0 else "<START>" ,
-		State.keys()[to]],
-			"velocity ",velocity
-		)
+	#print(Engine.get_physics_frames(), " << from %s to %s >> " % [
+		#State.keys()[from] if from >= 0 else "<START>" ,
+		#State.keys()[to]],
+			#"velocity ",velocity
+		#)
 
 
-func can_wall_sliding()-> bool:
-	return is_on_wall() and hand_checker.is_colliding() and foot_checker.is_colliding() and Input.is_action_pressed("catch_wall")
-func should_jump()-> bool:
-	var can_jump : bool = is_on_floor() or coyote_timer.time_left
-	var should_jump : bool = can_jump and jump_request_timer.time_left
-	return should_jump
+#玩家移动设定
+func move(gravity: float, delta: float)-> void:
+	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
+	var direction = Input.get_axis("move_left","move_right")
+	velocity.x = move_toward(velocity.x, RUN_SPEED_MAX * direction, acceleration * delta)#x方向移动
+	velocity.y += gravity * delta#y方向移动
+	if not is_zero_approx(direction):#翻转图像
+		graphic_2d.scale.x = -1 if direction < 0.0 else 1 
+	move_and_slide()
+
+#忽略玩家输入的移动
+func move_without_input(gravity: float, delta: float)-> void:
+	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
+	velocity.y += gravity * delta#y方向移动
+	move_and_slide()
+
+#状态的物理帧处理
+func tick_physics(state: State, delta: float) -> void:
+	match state:
+		State.IDLE:
+			move(default_gravity, delta)
+			
+		State.RUNING:
+			move(default_gravity, delta)
+			
+		State.JUMPING:
+			move(0.0 if is_first_tick else default_gravity, delta)
+			
+		State.FALLING:
+			move(default_gravity, delta)
+			
+		State.LANDING:
+			move(default_gravity, delta)
+			
+		State.WALL_SLIDING:
+			move_without_input(default_gravity / 1000.0, delta)
+			
+		State.WALL_JUMPING:
+
+			move(0.0 if is_first_tick else default_gravity, delta)
+			
+	is_first_tick = false
+
+
+
+
+
+
+
+
 
 
 
