@@ -14,10 +14,9 @@ func _ready() -> void:
 	current_state = 0
 
 func _physics_process(delta: float) -> void:
-	while true:
-		var next : int = owner.get_next_state(current_state)
-		if next == current_state:
-			break
-		current_state = next
+	var next : int = owner.get_next_state(current_state)
+	if next == current_state:
+		pass
+	else: current_state = next
 	owner.tick_physics(current_state, delta)
 	state_time += delta

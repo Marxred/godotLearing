@@ -134,6 +134,7 @@ _data = {
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_prgbp")
+RUN_SPEED_MAX = 105.0
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("8_k13mb")

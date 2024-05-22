@@ -18,15 +18,16 @@ const GROUND_STATES : Array[State] =[
 	State.ATTACK, State.COMBO_ATTACK, State.CRITICAL_ATTACK,]
 const ATTACK_STATE: Array[State] = [
 	State.ATTACK, State.COMBO_ATTACK, State.CRITICAL_ATTACK,]
+const AIR_STATE: Array[State] = [State.JUMPING, State.FALLING, State.WALL_JUMPING,]
 const FLOOR_ACCELERATE_TIME : float = 0.1
 const AIR_ACCELERATE_TIME : float = 0.2
-const COYOTE_TIME: float = 0.1
+const COYOTE_TIME: float = 0.05
 const JUMP_REQUEST_TIME: float = .1#不能太小，会导致无法起跳；极大数无影响，极小数有影响
 
 #初始化参数
-@export var JUMP_SPEED: float = -300.0
-@export var RUN_SPEED_MAX : float= 180.0
-@export var WALL_JUMP_SPEED: Vector2 = Vector2(250.0, -200.0)
+@export var JUMP_SPEED: float = -300.0##跳跃速度
+@export var RUN_SPEED_MAX : float= 125##跑步速度
+@export var WALL_JUMP_SPEED: Vector2 = Vector2(250.0, -200.0)##靠墙跳速度
 var FLOOR_ACCELERATION : float = RUN_SPEED_MAX / FLOOR_ACCELERATE_TIME
 var AIR_ACCELERATION : float = RUN_SPEED_MAX / AIR_ACCELERATE_TIME
 var default_gravity : float = ProjectSettings.get("physics/2d/default_gravity")
@@ -54,12 +55,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("attack"):
 		attack_request_timer.start()
 
-func can_wall_sliding()-> bool:
+func can_wall_sliding_use_colliding()-> bool:
 	return is_on_wall() and hand_checker.is_colliding() and foot_checker.is_colliding() and Input.is_action_pressed("catch_wall")
 
-func can_wall_sliding2()-> bool:
+func can_wall_sliding_use_raycast()-> bool:
 	return hand_checker.is_colliding() and foot_checker.is_colliding() and Input.is_action_pressed("catch_wall")
 
+func get_wall_normall_direction()-> int:
+	return -1 if (foot_checker.get_collision_point() - foot_checker.global_position).x > 0 else 1
 
 func should_jump()-> bool:
 	var can_jump : bool = is_on_floor() or coyote_timer.time_left
@@ -70,14 +73,13 @@ func should_jump()-> bool:
 func get_next_state(state: State)-> State:
 	var direction: float = Input.get_axis("move_left","move_right")
 	var is_still : bool = is_zero_approx(direction) and is_zero_approx(velocity.x)
-	
 	if state in GROUND_STATES and not is_on_floor():
 		return State.FALLING
-	if should_jump(): 
+	if should_jump():
 		return State.JUMPING
-	if state in GROUND_STATES and not state in ATTACK_STATE and attack_request_timer.time_left > 0:
+	if not state in ATTACK_STATE and state in GROUND_STATES and attack_request_timer.time_left > 0:
 		return State.ATTACK
-		
+	
 	match state:
 		State.IDLE:
 			if not is_still:
@@ -92,15 +94,13 @@ func get_next_state(state: State)-> State:
 		State.JUMPING:
 			if velocity.y >= 0 and not is_first_tick:
 				return State.FALLING
-			if can_wall_sliding() and not is_first_tick:
+			if can_wall_sliding_use_raycast() and not is_first_tick:
 				return State.WALL_SLIDING
-			#if can_wall_sliding2() and not is_first_tick:
-				#return State.WALL_SLIDING
 			
 		State.FALLING:
 			if is_on_floor():
 				return State.LANDING
-			if can_wall_sliding():
+			if can_wall_sliding_use_raycast() and not is_first_tick:
 				return State.WALL_SLIDING
 			
 		State.LANDING:
@@ -111,7 +111,7 @@ func get_next_state(state: State)-> State:
 		State.WALL_SLIDING:
 			if is_on_floor():
 				return State.IDLE
-			if Input.is_action_just_released("catch_wall"):
+			if not can_wall_sliding_use_raycast():
 				return State.FALLING
 			if jump_request_timer.time_left:
 				return State.WALL_JUMPING
@@ -119,7 +119,7 @@ func get_next_state(state: State)-> State:
 		State.WALL_JUMPING:
 			if velocity.y >= 0:
 				return State.FALLING
-			if can_wall_sliding():
+			if can_wall_sliding_use_raycast():
 				return State.WALL_SLIDING
 			
 		State.ATTACK:
@@ -141,9 +141,10 @@ func get_next_state(state: State)-> State:
 
 #状态转换函数，进行状态的初始化
 func transition_state(from: State, to: State)-> void:
-	if from in GROUND_STATES and to in GROUND_STATES:
-		coyote_timer.stop()
-	print(attack_request_timer.time_left)
+	#if from in GROUND_STATES and to in GROUND_STATES:
+		#print(coyote_timer.time_left)
+		#print("coyote_timer.stop()")
+		#coyote_timer.stop()
 	match to:
 		State.IDLE:
 			animation_playerStates.play("idle")
@@ -168,20 +169,14 @@ func transition_state(from: State, to: State)-> void:
 			
 		State.WALL_SLIDING:
 			animation_playerStates.play("wall_sliding")
-			velocity = Vector2.ZERO
-			graphic_2d.scale.x = get_wall_normal().x
-			
-		#State.WALL_SLIDING:
-			#animation_playerStates.play("wall_sliding")
-			#print()
-			#var wall_normall_direction : int = 1 if (foot_checker.get_collision_point()- foot_checker.global_position).x > 0 else -1
-			#velocity = Vector2(500, 0) * wall_normall_direction
-			#graphic_2d.scale.x = wall_normall_direction
+			velocity = Vector2(500, 0) * -get_wall_normall_direction()
 			
 		State.WALL_JUMPING:
 			animation_playerStates.play("jumping")
+			var wall_normall_direction : int = get_wall_normall_direction()
 			velocity = WALL_JUMP_SPEED
-			velocity.x *= get_wall_normal().x
+			velocity.x *= wall_normall_direction
+			graphic_2d.scale.x = wall_normall_direction
 			jump_request_timer.stop()
 			
 		State.ATTACK:
