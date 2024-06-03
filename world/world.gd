@@ -15,9 +15,9 @@ func _ready() -> void:
 	player_camera.limit_right = mapBound.end.x * tileSize.x
 	player_camera.reset_smoothing()
 	print(player_camera.limit_top," ",
-		player_camera.limit_bottom," ",
-		player_camera.limit_left," ",
-		player_camera.limit_right)
+			player_camera.limit_bottom," ",
+			player_camera.limit_left," ",
+			player_camera.limit_right)
 	Engine.set_time_scale(engine_time_scale)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_5u68t"]
 [ext_resource type="Texture2D" uid="uid://bg4g8jppro0xs" path="res://world/Tree-Assets.png" id="1_owpo0"]
-[ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player_body_2d.tscn" id="2_3g44t"]
+[ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player/player_body_2d.tscn" id="2_3g44t"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="4_ko2pc"]
 [ext_resource type="Texture2D" uid="uid://cb0s3sfkikkhp" path="res://assets/Trees/Background.png" id="5_gmlur"]
-[ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar.tscn" id="6_4xfbc"]
+[ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="6_4xfbc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4u2k3"]
 texture = ExtResource("1_owpo0")
@@ -709,8 +709,6 @@ layer_2/tile_data = PackedInt32Array(851974, 589824, 3, 851976, 589824, 2, 85197
 
 [node name="Player2D" parent="." instance=ExtResource("2_3g44t")]
 position = Vector2(496, 150)
-JUMP_SPEED = -300.0
-WALL_JUMP_SPEED = Vector2(250, -200)
 
 [node name="Player_camera" type="Camera2D" parent="Player2D"]
 limit_smoothed = true
@@ -727,3 +725,6 @@ editor_draw_drag_margin = true
 
 [node name="Boar" parent="." instance=ExtResource("6_4xfbc")]
 position = Vector2(351, 178)
+
+[node name="Boar2" parent="." instance=ExtResource("6_4xfbc")]
+position = Vector2(553, 120)

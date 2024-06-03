@@ -12,7 +12,11 @@ enum State{
 	ATTACK,
 	COMBO_ATTACK,
 	CRITICAL_ATTACK,
+	HURT,
+	DIE,
 }
+
+
 const GROUND_STATES : Array[State] =[
 	State.IDLE, State.RUNING,  State.LANDING,
 	State.ATTACK, State.COMBO_ATTACK, State.CRITICAL_ATTACK,]
@@ -28,11 +32,12 @@ const JUMP_REQUEST_TIME: float = .1#不能太小，会导致无法起跳；极�
 @export var JUMP_SPEED: float = -300.0##跳跃速度
 @export var RUN_SPEED_MAX : float= 125##跑步速度
 @export var WALL_JUMP_SPEED: Vector2 = Vector2(250.0, -200.0)##靠墙跳速度
+var CHILL_TIME:float = 0.5
 var FLOOR_ACCELERATION : float = RUN_SPEED_MAX / FLOOR_ACCELERATE_TIME
 var AIR_ACCELERATION : float = RUN_SPEED_MAX / AIR_ACCELERATE_TIME
 var default_gravity : float = ProjectSettings.get("physics/2d/default_gravity")
 var is_first_tick: bool = false
-
+var KNOCKBACK:float = 512.0
 #初始化资源
 @onready var state_machine: StateMachine = $StateMachine
 @onready var coyote_timer: Timer = $CoyoteTimer
@@ -44,7 +49,9 @@ var is_first_tick: bool = false
 @onready var foot_checker: RayCast2D = $Graphic2D/FootChecker
 @onready var hurtbox: CollisionShape2D = $Graphic2D/Hurtbox/hurtbox
 @onready var hitbox: CollisionShape2D = $Graphic2D/HitBox/hitbox
-
+@onready var stats: Stats = $Stats
+@onready var invincible_timer: Timer = $InvincibleTimer
+var pending_damage: Damage 
 
 #进行条件判断的函数们
 func _unhandled_input(event: InputEvent) -> void:
@@ -70,13 +77,23 @@ func get_wall_normall_direction()-> int:
 
 func should_jump()-> bool:
 	var can_jump : bool = is_on_floor() or coyote_timer.time_left
-	var should_jump : bool = can_jump and jump_request_timer.time_left
-	return should_jump
-
+	var _should_jump : bool = can_jump and jump_request_timer.time_left
+	return _should_jump
+func hitbox_enable(from:float, to:float)-> void:
+	var AniPos : float = animation_playerStates.current_animation_position
+	if from <= AniPos and AniPos <= to:
+		hitbox.set_disabled(false)
+	else:
+		hitbox.set_disabled(true)
 #状态变换判断
 func get_next_state(state: State)-> State:
-	var direction: float = Input.get_axis("move_left","move_right")
-	var is_still : bool = is_zero_approx(direction) and is_zero_approx(velocity.x)
+	state_machine.ENTER_CURRENT_STATE_AGAIN = false
+
+	if stats.health <= 0:
+		return State.DIE
+	if pending_damage != null:
+		state_machine.ENTER_CURRENT_STATE_AGAIN = true
+		return State.HURT
 	if state in GROUND_STATES and not is_on_floor():
 		return State.FALLING
 	if should_jump():
@@ -84,6 +101,10 @@ func get_next_state(state: State)-> State:
 	if not state in ATTACK_STATE and state in GROUND_STATES and attack_request_timer.time_left > 0:
 		return State.ATTACK
 	
+	#为接下来的判断准备
+	var direction: float = Input.get_axis("move_left","move_right")
+	var is_still : bool = is_zero_approx(direction) and is_zero_approx(velocity.x)
+
 	match state:
 		State.IDLE:
 			if not is_still:
@@ -100,18 +121,18 @@ func get_next_state(state: State)-> State:
 				return State.FALLING
 			if can_wall_sliding_use_raycast() and not is_first_tick:
 				return State.WALL_SLIDING
-			
+
 		State.FALLING:
 			if is_on_floor():
 				return State.LANDING
 			if can_wall_sliding_use_raycast() and not is_first_tick:
 				return State.WALL_SLIDING
-			
 		State.LANDING:
 			if not animation_playerStates.is_playing() or not is_still:
 				return State.IDLE
 			if attack_request_timer.time_left:
 				return State.ATTACK
+			
 		State.WALL_SLIDING:
 			if is_on_floor():
 				return State.IDLE
@@ -119,7 +140,6 @@ func get_next_state(state: State)-> State:
 				return State.FALLING
 			if jump_request_timer.time_left:
 				return State.WALL_JUMPING
-			
 		State.WALL_JUMPING:
 			if velocity.y >= 0:
 				return State.FALLING
@@ -131,39 +151,22 @@ func get_next_state(state: State)-> State:
 				if attack_request_timer.time_left > 0:
 					return State.COMBO_ATTACK
 				else: return State.IDLE
-			
-			var AniPos : float = animation_playerStates.current_animation_position
-			if 0.3 <= AniPos and AniPos <= 0.5:
-				hitbox.set_disabled(false)
-			else:
-				hitbox.set_disabled(true)
 		State.COMBO_ATTACK:
 			if not animation_playerStates.is_playing():
 				if attack_request_timer.time_left > 0:
 					return State.CRITICAL_ATTACK
 				else: return State.IDLE
-			var AniPos : float = animation_playerStates.current_animation_position
-			if 0 <= AniPos and AniPos <= 0.1:
-				hitbox.set_disabled(false)
-			else:
-				hitbox.set_disabled(true)
 		State.CRITICAL_ATTACK:
 			if not animation_playerStates.is_playing():
 				return State.IDLE
-			var AniPos : float = animation_playerStates.current_animation_position
-			if 0.1 <= AniPos and AniPos <= 0.6:
-				hitbox.set_disabled(false)
-			else:
-				hitbox.set_disabled(true)
-	return state
 
+		State.HURT:
+			if not animation_playerStates.is_playing():
+				return State.IDLE
+	return state
 
 #状态转换函数，进行状态的初始化
 func transition_state(from: State, to: State)-> void:
-	#if from in GROUND_STATES and to in GROUND_STATES:
-		#print(coyote_timer.time_left)
-		#print("coyote_timer.stop()")
-		#coyote_timer.stop()
 	match to:
 		State.IDLE:
 			animation_playerStates.play("idle")
@@ -200,11 +203,24 @@ func transition_state(from: State, to: State)-> void:
 			
 		State.ATTACK:
 			animation_playerStates.play("attack")
-			
 		State.COMBO_ATTACK:
 			animation_playerStates.play("combo_attack")
 		State.CRITICAL_ATTACK:
 			animation_playerStates.play("critical_attack")
+		State.HURT:
+			invincible_timer.start()
+			animation_playerStates.play("hurt")
+			stats.health -= pending_damage.damage
+			var dam_dir:Vector2 = self.global_position.direction_to(pending_damage.source.global_position) 
+			pending_damage = null
+			if dam_dir.x > 0:
+				graphic_2d.scale.x = 1
+			else:graphic_2d.scale.x = -1
+			velocity = KNOCKBACK *-dam_dir
+			
+		State.DIE:
+			animation_playerStates.play("die")
+			
 	is_first_tick = true
 
 	print(owner.name, 
@@ -215,6 +231,41 @@ func transition_state(from: State, to: State)-> void:
 		],
 		"velocity ",velocity
 		)
+
+#状态的物理帧处理
+func tick_physics(state: State, delta: float) -> void:
+	if invincible_timer.get_time_left() > 0.0:
+		graphic_2d.modulate.a = sin(invincible_timer.get_time_left() * 32) * 0.5 + 0.5
+	else: graphic_2d.modulate.a = 1
+	match state:
+		State.RUNING, State.FALLING, State.LANDING:
+			move(default_gravity, delta)
+		State.JUMPING:
+			move(0.0 if is_first_tick else default_gravity, delta)
+			
+		State.WALL_SLIDING:
+			move_without_input(default_gravity / 1000.0, delta)
+		State.WALL_JUMPING:
+			move(0.0 if is_first_tick else default_gravity, delta)
+			
+		State.HURT, State.IDLE:
+			move_without_input(default_gravity, delta)
+			
+		State.ATTACK:
+			hitbox_enable(0.3, 0.5)
+			move_without_input(default_gravity, delta)
+		State.COMBO_ATTACK:
+			hitbox_enable(0.0, 0.1)
+			move_without_input(default_gravity, delta)
+		State.CRITICAL_ATTACK:
+			hitbox_enable(0.1, 0.6)
+			move_without_input(default_gravity, delta)
+			
+		State.DIE:
+			if state_machine.state_time > 2.5:
+				get_tree().reload_current_scene()
+			move_without_input(default_gravity, delta)
+	is_first_tick = false
 
 
 #玩家输入进行移动
@@ -230,50 +281,15 @@ func move(gravity: float, delta: float)-> void:
 #忽略玩家输入的移动
 func move_without_input(gravity: float, delta: float)-> void:
 	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
-	velocity.x = move_toward(velocity.x, 0, acceleration * delta)#x方向移动
+	velocity.x = move_toward(velocity.x, 0.0, acceleration * delta)#x方向移动
 	velocity.y += gravity * delta#y方向移动
 	move_and_slide()
 
-#状态的物理帧处理
-func tick_physics(state: State, delta: float) -> void:
-	match state:
-		State.IDLE:
-			move(default_gravity, delta)
-			
-		State.RUNING:
-			move(default_gravity, delta)
-			
-		State.JUMPING:
-			move(0.0 if is_first_tick else default_gravity, delta)
-			
-		State.FALLING:
-			move(default_gravity, delta)
-			
-		State.LANDING:
-			move(default_gravity, delta)
-			
-		State.WALL_SLIDING:
-			move_without_input(default_gravity / 1000.0, delta)
-			
-		State.WALL_JUMPING:
-			move(0.0 if is_first_tick else default_gravity, delta)
-			
-		State.ATTACK:
-			move_without_input(default_gravity, delta)
-		State.COMBO_ATTACK:
-			move_without_input(default_gravity, delta)
-		State.CRITICAL_ATTACK:
-			move_without_input(default_gravity, delta)
-			
-	is_first_tick = false
 
 
-
-
-
-
-
-
-
-
-
+func _on_hurtbox_hurt(_hitbox: HitBox) -> void:
+	if invincible_timer.get_time_left() > 0:
+		return
+	pending_damage = Damage.new()
+	pending_damage.damage = 1
+	pending_damage.source = _hitbox

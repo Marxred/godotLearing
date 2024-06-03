@@ -1,19 +1,22 @@
-[gd_scene load_steps=20 format=3 uid="uid://bx3xmo2otglfh"]
+[gd_scene load_steps=23 format=3 uid="uid://bx3xmo2otglfh"]
 
 [ext_resource type="Script" path="res://player/control_player_body_2d.gd" id="1_prgbp"]
-[ext_resource type="Texture2D" uid="uid://605vviddb3ua" path="res://player/char_blue_2.png" id="2_y2p88"]
-[ext_resource type="Animation" uid="uid://dhqbdwvo7icx4" path="res://player/player_animation/player_idle.res" id="3_at5vp"]
-[ext_resource type="Animation" uid="uid://dtgesqtus4chs" path="res://player/player_animation/player_jumping.res" id="4_ee21t"]
-[ext_resource type="Script" path="res://HurtboxPlayer.gd" id="4_ehg2t"]
-[ext_resource type="Animation" uid="uid://drhd8s8apr6w4" path="res://player/player_animation/player_runing.res" id="5_qt82u"]
-[ext_resource type="Animation" uid="uid://cxwypubbwgqwl" path="res://player/player_animation/player_landing.res" id="6_7npjk"]
-[ext_resource type="Animation" uid="uid://c0urhgp3ulwts" path="res://player/player_animation/player_falling.res" id="7_nsblr"]
+[ext_resource type="Texture2D" uid="uid://605vviddb3ua" path="res://assets/Player/char_blue_2.png" id="2_y2p88"]
+[ext_resource type="Animation" uid="uid://dhqbdwvo7icx4" path="res://animations/player_animations/player_idle.res" id="3_at5vp"]
+[ext_resource type="Script" path="res://classes/hurtbox.gd" id="4_4fhwu"]
+[ext_resource type="Animation" uid="uid://dtgesqtus4chs" path="res://animations/player_animations/player_jumping.res" id="4_ee21t"]
+[ext_resource type="Animation" uid="uid://drhd8s8apr6w4" path="res://animations/player_animations/player_runing.res" id="5_qt82u"]
+[ext_resource type="Animation" uid="uid://cxwypubbwgqwl" path="res://animations/player_animations/player_landing.res" id="6_7npjk"]
+[ext_resource type="Animation" uid="uid://c0urhgp3ulwts" path="res://animations/player_animations/player_falling.res" id="7_nsblr"]
 [ext_resource type="Script" path="res://classes/StateMachine.gd" id="8_k13mb"]
-[ext_resource type="Animation" uid="uid://dfcaqry1ap885" path="res://player/player_animation/wall_sliding.res" id="8_vflrg"]
-[ext_resource type="Animation" uid="uid://ucts37xbna6w" path="res://player/player_animation/combo_attack.res" id="10_jgljx"]
-[ext_resource type="Animation" uid="uid://bojhi37gm366x" path="res://player/player_animation/attack.res" id="11_mlvkm"]
-[ext_resource type="Animation" uid="uid://bynvo7dcnkj64" path="res://player/player_animation/critical_attack.res" id="12_w3q7q"]
+[ext_resource type="Animation" uid="uid://dfcaqry1ap885" path="res://animations/player_animations/wall_sliding.res" id="8_vflrg"]
+[ext_resource type="Animation" uid="uid://ucts37xbna6w" path="res://animations/player_animations/combo_attack.res" id="10_jgljx"]
+[ext_resource type="Animation" uid="uid://bojhi37gm366x" path="res://animations/player_animations/attack.res" id="11_mlvkm"]
+[ext_resource type="Animation" uid="uid://bynvo7dcnkj64" path="res://animations/player_animations/critical_attack.res" id="12_w3q7q"]
 [ext_resource type="Script" path="res://classes/hitbox.gd" id="14_c05f6"]
+[ext_resource type="Animation" uid="uid://w5euu5ertvnn" path="res://animations/player_animations/hurt.res" id="15_81y4t"]
+[ext_resource type="Animation" uid="uid://b50sdqj20uogx" path="res://animations/player_animations/die.res" id="16_4s1n6"]
+[ext_resource type="Script" path="res://classes/stats.gd" id="17_5htdj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xneqw"]
 size = Vector2(10, 28)
@@ -131,7 +134,9 @@ _data = {
 "attack": ExtResource("11_mlvkm"),
 "combo_attack": ExtResource("10_jgljx"),
 "critical_attack": ExtResource("12_w3q7q"),
+"die": ExtResource("16_4s1n6"),
 "falling": ExtResource("7_nsblr"),
+"hurt": ExtResource("15_81y4t"),
 "idle": ExtResource("3_at5vp"),
 "jumping": ExtResource("4_ee21t"),
 "landing": ExtResource("6_7npjk"),
@@ -167,10 +172,9 @@ rotation = 4.71238
 target_position = Vector2(-1.33276e-05, 6)
 
 [node name="Hurtbox" type="Area2D" parent="Graphic2D"]
-visible = false
 collision_layer = 2
 collision_mask = 0
-script = ExtResource("4_ehg2t")
+script = ExtResource("4_4fhwu")
 
 [node name="hurtbox" type="CollisionShape2D" parent="Graphic2D/Hurtbox"]
 position = Vector2(0, -14)
@@ -206,3 +210,12 @@ one_shot = true
 [node name="AttackRequestTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
+
+[node name="InvincibleTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("17_5htdj")
+MAX_HEALTH = 100
+
+[connection signal="hurt" from="Graphic2D/Hurtbox" to="." method="_on_hurtbox_hurt"]

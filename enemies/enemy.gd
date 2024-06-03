@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 enum Direction{
 	LEFT = -1,
+	MIDDLE = 0,
 	RIGHT = 1,
 }
 

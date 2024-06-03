@@ -8,15 +8,17 @@ var current_state: int = -1:
 		current_state = v
 		state_time = 0
 var state_time:float = 0
-
+var KEEP_CURRENT_STATE: int= -1
+var ENTER_CURRENT_STATE_AGAIN:bool = false
 func _ready() -> void:
 	await owner.ready
 	current_state = 0
 
 func _physics_process(delta: float) -> void:
 	var next : int = owner.get_next_state(current_state)
-	if next == current_state:
+	if next == current_state and !ENTER_CURRENT_STATE_AGAIN:
 		pass
-	else: current_state = next
+	else:
+		current_state = next
 	owner.tick_physics(current_state, delta)
 	state_time += delta

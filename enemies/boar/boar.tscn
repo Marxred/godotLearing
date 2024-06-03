@@ -1,12 +1,14 @@
-[gd_scene load_steps=16 format=3 uid="uid://dx1kprraoeemj"]
+[gd_scene load_steps=19 format=3 uid="uid://dx1kprraoeemj"]
 
 [ext_resource type="PackedScene" uid="uid://dgvdkbr7jgm3t" path="res://enemies/enemy.tscn" id="1_kfy5k"]
 [ext_resource type="Texture2D" uid="uid://dxse886jeu4sj" path="res://assets/Enemies/Boar/Run-Sheet.png" id="2_fkyny"]
-[ext_resource type="Script" path="res://enemies/boar.gd" id="2_ft5hw"]
+[ext_resource type="Script" path="res://enemies/boar/boar.gd" id="2_ft5hw"]
 [ext_resource type="Texture2D" uid="uid://b44hda4u2boly" path="res://assets/Enemies/Boar/Walk-Base-Sheet.png" id="3_wc0r6"]
-[ext_resource type="Animation" uid="uid://5d7copni8kl" path="res://assets/Enemies/Boar/run.res" id="5_oayop"]
-[ext_resource type="Animation" uid="uid://dsmt6622t5jtc" path="res://assets/Enemies/Boar/hited.res" id="6_amfwu"]
-[ext_resource type="Animation" uid="uid://cw7ndptjme01r" path="res://assets/Enemies/Boar/idle.res" id="7_rwtf1"]
+[ext_resource type="Animation" uid="uid://5d7copni8kl" path="res://animations/boar_animations/run.res" id="5_oayop"]
+[ext_resource type="Animation" uid="uid://dsmt6622t5jtc" path="res://animations/boar_animations/hited.res" id="6_amfwu"]
+[ext_resource type="Animation" uid="uid://cw7ndptjme01r" path="res://animations/boar_animations/idle.res" id="7_rwtf1"]
+[ext_resource type="Script" path="res://classes/stats.gd" id="8_2liup"]
+[ext_resource type="Texture2D" uid="uid://btpbcfuw1qc22" path="res://assets/Enemies/Boar/Hit-Sheet.png" id="8_jkbc8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vbqme"]
 size = Vector2(24, 22)
@@ -97,6 +99,118 @@ tracks/6/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Graphic/Sprite2D:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_dennt"]
+resource_name = "hited"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Graphic/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("8_jkbc8")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Graphic/Sprite2D:region_enabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Graphic/Sprite2D:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 0, 192, 32)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Graphic/Sprite2D:hframes")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Graphic/Sprite2D:vframes")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Graphic/Sprite2D:flip_h")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Graphic/Sprite2D:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Graphic/Sprite2D:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_37t2f"]
 resource_name = "walk"
@@ -186,10 +300,23 @@ tracks/6/keys = {
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Graphic/Sprite2D:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7veih"]
 _data = {
 "RESET": SubResource("Animation_8y7wg"),
+"die": SubResource("Animation_dennt"),
 "hited": ExtResource("6_amfwu"),
 "idle": ExtResource("7_rwtf1"),
 "run": ExtResource("5_oayop"),
@@ -221,6 +348,7 @@ region_rect = Rect2(0, 0, 48, 32)
 
 [node name="WallChecker" type="RayCast2D" parent="Graphic" index="1"]
 position = Vector2(0, -14)
+enabled = false
 target_position = Vector2(22, 0)
 
 [node name="FootChecker" type="RayCast2D" parent="Graphic" index="2"]
@@ -268,3 +396,8 @@ shape = SubResource("RectangleShape2D_027it")
 [node name="hurtbox" type="CollisionShape2D" parent="Hurtbox" index="1"]
 position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_7qvqw")
+
+[node name="Stats" type="Node" parent="." index="7"]
+script = ExtResource("8_2liup")
+
+[connection signal="hurt" from="Hurtbox" to="." method="_on_hurtbox_hurt"]
