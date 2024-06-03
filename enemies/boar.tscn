@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dx1kprraoeemj"]
+[gd_scene load_steps=16 format=3 uid="uid://dx1kprraoeemj"]
 
 [ext_resource type="PackedScene" uid="uid://dgvdkbr7jgm3t" path="res://enemies/enemy.tscn" id="1_kfy5k"]
 [ext_resource type="Texture2D" uid="uid://dxse886jeu4sj" path="res://assets/Enemies/Boar/Run-Sheet.png" id="2_fkyny"]
@@ -196,6 +196,18 @@ _data = {
 "walk": SubResource("Animation_37t2f")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b8edn"]
+size = Vector2(24, 22)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b4eh6"]
+size = Vector2(28, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_027it"]
+size = Vector2(28, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7qvqw"]
+size = Vector2(24, 22)
+
 [node name="Boar" instance=ExtResource("1_kfy5k")]
 collision_layer = 4
 script = ExtResource("2_ft5hw")
@@ -232,3 +244,27 @@ libraries = {
 
 [node name="CalmDownTimer" type="Timer" parent="." index="4"]
 one_shot = true
+
+[node name="HitBox" parent="." index="5"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="hitbox" type="CollisionShape2D" parent="HitBox" index="0"]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_b8edn")
+
+[node name="hitbox2" type="CollisionShape2D" parent="HitBox" index="1"]
+position = Vector2(4, -12)
+shape = SubResource("RectangleShape2D_b4eh6")
+
+[node name="Hurtbox" parent="." index="6"]
+collision_layer = 4
+collision_mask = 0
+
+[node name="hurtbox2" type="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2(4, -12)
+shape = SubResource("RectangleShape2D_027it")
+
+[node name="hurtbox" type="CollisionShape2D" parent="Hurtbox" index="1"]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_7qvqw")

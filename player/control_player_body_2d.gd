@@ -42,8 +42,11 @@ var is_first_tick: bool = false
 @onready var animation_playerStates: AnimationPlayer = $Animation_PlayerStates
 @onready var hand_checker: RayCast2D = $Graphic2D/HandChecker
 @onready var foot_checker: RayCast2D = $Graphic2D/FootChecker
+@onready var hurtbox: CollisionShape2D = $Graphic2D/Hurtbox/hurtbox
+@onready var hitbox: CollisionShape2D = $Graphic2D/HitBox/hitbox
 
 
+#进行条件判断的函数们
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("jump"):
 		jump_request_timer.set_wait_time(JUMP_REQUEST_TIME)
@@ -62,7 +65,8 @@ func can_wall_sliding_use_raycast()-> bool:
 	return hand_checker.is_colliding() and foot_checker.is_colliding() and Input.is_action_pressed("catch_wall")
 
 func get_wall_normall_direction()-> int:
-	return -1 if (foot_checker.get_collision_point() - foot_checker.global_position).x > 0 else 1
+	#return -1 if (foot_checker.get_collision_point().direction_to() - foot_checker.global_position).x > 0 else 1
+	return -1 if (foot_checker.global_position.direction_to(foot_checker.get_collision_point())).x > 0 else 1
 
 func should_jump()-> bool:
 	var can_jump : bool = is_on_floor() or coyote_timer.time_left
@@ -128,14 +132,29 @@ func get_next_state(state: State)-> State:
 					return State.COMBO_ATTACK
 				else: return State.IDLE
 			
+			var AniPos : float = animation_playerStates.current_animation_position
+			if 0.3 <= AniPos and AniPos <= 0.5:
+				hitbox.set_disabled(false)
+			else:
+				hitbox.set_disabled(true)
 		State.COMBO_ATTACK:
 			if not animation_playerStates.is_playing():
 				if attack_request_timer.time_left > 0:
 					return State.CRITICAL_ATTACK
 				else: return State.IDLE
+			var AniPos : float = animation_playerStates.current_animation_position
+			if 0 <= AniPos and AniPos <= 0.1:
+				hitbox.set_disabled(false)
+			else:
+				hitbox.set_disabled(true)
 		State.CRITICAL_ATTACK:
 			if not animation_playerStates.is_playing():
 				return State.IDLE
+			var AniPos : float = animation_playerStates.current_animation_position
+			if 0.1 <= AniPos and AniPos <= 0.6:
+				hitbox.set_disabled(false)
+			else:
+				hitbox.set_disabled(true)
 	return state
 
 
@@ -181,6 +200,7 @@ func transition_state(from: State, to: State)-> void:
 			
 		State.ATTACK:
 			animation_playerStates.play("attack")
+			
 		State.COMBO_ATTACK:
 			animation_playerStates.play("combo_attack")
 		State.CRITICAL_ATTACK:
