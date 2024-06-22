@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dgvdkbr7jgm3t"]
 
 [ext_resource type="Script" path="res://enemies/enemy.gd" id="1_kox2r"]
-[ext_resource type="Script" path="res://classes/StateMachine.gd" id="2_vpvpd"]
+[ext_resource type="Script" path="res://classes/stateMachine.gd" id="2_kfvut"]
 [ext_resource type="Script" path="res://classes/hitbox.gd" id="3_crxax"]
 [ext_resource type="Script" path="res://classes/hurtbox.gd" id="4_f4116"]
 
@@ -9,7 +9,7 @@
 script = ExtResource("1_kox2r")
 
 [node name="StateMachine" type="Node" parent="."]
-script = ExtResource("2_vpvpd")
+script = ExtResource("2_kfvut")
 
 [node name="Graphic" type="Node2D" parent="."]
 

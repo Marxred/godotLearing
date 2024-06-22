@@ -1,3 +1,4 @@
+class_name Boar
 extends Enemy
 
 enum State{
@@ -9,10 +10,10 @@ enum State{
 	DIE,
 }
 var walk_speed:float = 100.0
-var pending_damage: Damage
 var KNOCKBACK:float = 512.0
 var CHILL_TIME:float = 0.5
 var STILL_TIME:float = 1.5
+
 @onready var wall_checker: RayCast2D = $Graphic/WallChecker#判断wall
 @onready var foot_checker: RayCast2D = $Graphic/FootChecker#判断悬崖
 @onready var player_checker: RayCast2D = $Graphic/PlayerChecker
@@ -20,6 +21,8 @@ var STILL_TIME:float = 1.5
 @onready var hit_box: HitBox = $HitBox
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var stats: Stats = $Stats
+var pending_damage: Damage
+
 
 func _ready() -> void:
 	pass
@@ -79,11 +82,13 @@ func transition_state(from: State, to: State)-> void:
 		State.HITED:
 			animation_player.play("hited")
 			stats.health -= pending_damage.damage
-			var dam_dir:Vector2 = self.global_position.direction_to(pending_damage.source.global_position) 
+			var dam_dir:Vector2 = self.global_position\
+						.direction_to(pending_damage.source.global_position) 
 			pending_damage = null
-			if dam_dir.x > 0:
-				direction = Direction.RIGHT
-			else:direction = Direction.LEFT
+			#if dam_dir.x > 0:
+				#direction = Direction.RIGHT
+			#else:direction = Direction.LEFT
+			direction = dam_dir.sign().x as int
 			velocity = KNOCKBACK *-dam_dir
 			
 		State.DIE:

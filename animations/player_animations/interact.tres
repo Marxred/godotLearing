@@ -1,0 +1,44 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://dixc68jhmttrr"]
+
+[ext_resource type="Texture2D" uid="uid://5mpxr0y63u21" path="res://assets/Gamepad/gdb-keyboard-2.png" id="1_ffxwn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fgmdm"]
+atlas = ExtResource("1_ffxwn")
+region = Rect2(96, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_65wpf"]
+atlas = ExtResource("1_ffxwn")
+region = Rect2(96, 160, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gwp65"]
+atlas = ExtResource("1_ffxwn")
+region = Rect2(96, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ulqw"]
+atlas = ExtResource("1_ffxwn")
+region = Rect2(96, 384, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fgmdm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_65wpf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gwp65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ulqw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]

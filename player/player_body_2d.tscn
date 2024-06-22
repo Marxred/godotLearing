@@ -1,14 +1,14 @@
-[gd_scene load_steps=23 format=3 uid="uid://bx3xmo2otglfh"]
+[gd_scene load_steps=26 format=3 uid="uid://bx3xmo2otglfh"]
 
-[ext_resource type="Script" path="res://player/control_player_body_2d.gd" id="1_prgbp"]
+[ext_resource type="Script" path="res://player/player.gd" id="1_vrxgc"]
 [ext_resource type="Texture2D" uid="uid://605vviddb3ua" path="res://assets/Player/char_blue_2.png" id="2_y2p88"]
 [ext_resource type="Animation" uid="uid://dhqbdwvo7icx4" path="res://animations/player_animations/player_idle.res" id="3_at5vp"]
 [ext_resource type="Script" path="res://classes/hurtbox.gd" id="4_4fhwu"]
 [ext_resource type="Animation" uid="uid://dtgesqtus4chs" path="res://animations/player_animations/player_jumping.res" id="4_ee21t"]
+[ext_resource type="Script" path="res://classes/stateMachine.gd" id="4_m6wm8"]
 [ext_resource type="Animation" uid="uid://drhd8s8apr6w4" path="res://animations/player_animations/player_runing.res" id="5_qt82u"]
 [ext_resource type="Animation" uid="uid://cxwypubbwgqwl" path="res://animations/player_animations/player_landing.res" id="6_7npjk"]
 [ext_resource type="Animation" uid="uid://c0urhgp3ulwts" path="res://animations/player_animations/player_falling.res" id="7_nsblr"]
-[ext_resource type="Script" path="res://classes/StateMachine.gd" id="8_k13mb"]
 [ext_resource type="Animation" uid="uid://dfcaqry1ap885" path="res://animations/player_animations/wall_sliding.res" id="8_vflrg"]
 [ext_resource type="Animation" uid="uid://ucts37xbna6w" path="res://animations/player_animations/combo_attack.res" id="10_jgljx"]
 [ext_resource type="Animation" uid="uid://bojhi37gm366x" path="res://animations/player_animations/attack.res" id="11_mlvkm"]
@@ -17,6 +17,9 @@
 [ext_resource type="Animation" uid="uid://w5euu5ertvnn" path="res://animations/player_animations/hurt.res" id="15_81y4t"]
 [ext_resource type="Animation" uid="uid://b50sdqj20uogx" path="res://animations/player_animations/die.res" id="16_4s1n6"]
 [ext_resource type="Script" path="res://classes/stats.gd" id="17_5htdj"]
+[ext_resource type="Animation" uid="uid://bvtyook018d2d" path="res://animations/player_animations/sliding.res" id="17_k6cna"]
+[ext_resource type="PackedScene" uid="uid://bh3w6vfy7f2j7" path="res://UI/player_status_panel.tscn" id="18_4tuia"]
+[ext_resource type="SpriteFrames" uid="uid://dixc68jhmttrr" path="res://animations/player_animations/interact.tres" id="20_ba878"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xneqw"]
 size = Vector2(10, 28)
@@ -127,30 +130,59 @@ tracks/7/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../Graphic2D/Sprite_Player:offset")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../Graphic2D/Sprite_Player:flip_v")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ayu57"]
 _data = {
 "RESET": SubResource("Animation_na4h4"),
 "attack": ExtResource("11_mlvkm"),
-"combo_attack": ExtResource("10_jgljx"),
-"critical_attack": ExtResource("12_w3q7q"),
+"attack_combo": ExtResource("10_jgljx"),
+"attack_critical": ExtResource("12_w3q7q"),
 "die": ExtResource("16_4s1n6"),
-"falling": ExtResource("7_nsblr"),
+"fall": ExtResource("7_nsblr"),
 "hurt": ExtResource("15_81y4t"),
 "idle": ExtResource("3_at5vp"),
-"jumping": ExtResource("4_ee21t"),
-"landing": ExtResource("6_7npjk"),
-"runing": ExtResource("5_qt82u"),
-"wall_sliding": ExtResource("8_vflrg")
+"jump": ExtResource("4_ee21t"),
+"land": ExtResource("6_7npjk"),
+"run": ExtResource("5_qt82u"),
+"slide_floor": ExtResource("17_k6cna"),
+"slide_wall": ExtResource("8_vflrg")
 }
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 2
-script = ExtResource("1_prgbp")
-RUN_SPEED_MAX = 105.0
+collision_mask = 3
+script = ExtResource("1_vrxgc")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("17_5htdj")
+MAX_HEALTH = 100
 
 [node name="StateMachine" type="Node" parent="."]
-script = ExtResource("8_k13mb")
+script = ExtResource("4_m6wm8")
 
 [node name="Graphic2D" type="Node2D" parent="."]
 
@@ -194,7 +226,7 @@ disabled = true
 position = Vector2(0, -14)
 shape = SubResource("CapsuleShape2D_0ot48")
 
-[node name="Animation_PlayerStates" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayerStates" type="AnimationPlayer" parent="."]
 root_node = NodePath("../CollisionShape")
 libraries = {
 "": SubResource("AnimationLibrary_ayu57")
@@ -214,8 +246,26 @@ one_shot = true
 [node name="InvincibleTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="Stats" type="Node" parent="."]
-script = ExtResource("17_5htdj")
-MAX_HEALTH = 100
+[node name="SlidingInvincibleTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="SlidingTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StatusPanel" parent="UI" node_paths=PackedStringArray("stats") instance=ExtResource("18_4tuia")]
+offset_left = 9.0
+offset_top = 9.0
+offset_right = 97.0
+offset_bottom = 35.0
+stats = NodePath("../../Stats")
+
+[node name="AnimationInteract" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, -44)
+sprite_frames = ExtResource("20_ba878")
+frame_progress = 0.171033
 
 [connection signal="hurt" from="Graphic2D/Hurtbox" to="." method="_on_hurtbox_hurt"]
