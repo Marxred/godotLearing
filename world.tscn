@@ -749,20 +749,20 @@ offset_bottom = 197.0
 icon = ExtResource("7_56kpb")
 script = ExtResource("8_71xo8")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Mushroom" type="Area2D" parent="."]
 position = Vector2(264, -8)
 collision_mask = 2
 script = ExtResource("9_01w86")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Mushroom"]
 shape = SubResource("RectangleShape2D_tdi7o")
 
-[node name="Area2D2" type="Area2D" parent="."]
+[node name="Air" type="Area2D" parent="."]
 position = Vector2(280, -8)
 collision_mask = 2
 script = ExtResource("9_01w86")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Air"]
 shape = SubResource("RectangleShape2D_3i6qh")
 
 [connection signal="pressed" from="CanvasLayer/Button" to="Player2D" method="_on_button_pressed"]

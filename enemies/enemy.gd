@@ -17,7 +17,6 @@ var acceration: float = max_speed / 0.2
 		if not is_node_ready():
 			await ready
 		graphic.scale.x = direction
-		print(direction)
 #初始化资源
 @onready var graphic: Node2D = $Graphic
 @onready var animation_player: AnimationPlayer = $AnimationPlayer

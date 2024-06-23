@@ -2,17 +2,18 @@ class_name StateMachine
 extends Node
 
 
+#与人物get_next_state配合使用,实现控制同一状态的重复进入
+var ENTER_CURRENT_STATE_AGAIN:bool = false
+#记录进入一个状态的时间
+var state_time:float = 0.0
 var current_state: int = -1:
 	set(v):
 		owner.transition_state(current_state, v)
 		ENTER_CURRENT_STATE_AGAIN = false
-		#与人物get_next_state配合使用,实现控制同一状态的重复进入
 		current_state = v
 		state_time = 0.0
 
-var state_time:float = 0.0
-#记录进入一个状态的时间
-var ENTER_CURRENT_STATE_AGAIN:bool = false
+
 func _ready() -> void:
 	await owner.ready
 	current_state = 0

@@ -231,19 +231,18 @@ func transition_state(from: State, to: State)-> void:
 		State.DIE:
 			animation_playerStates.play(state_to_animation_name.get(State.DIE))
 
-	print(owner.name, 
-		" [ %s ] << from %s to %s >> " % [
-		Engine.get_physics_frames(),
-		State.keys()[from] if from >= 0 else "<START>" ,
-		State.keys()[to]
-		],
-		"velocity ",velocity
-		)
+	#print(owner.name, 
+		#" [ %s ] << from %s to %s >> " % [
+		#Engine.get_physics_frames(),
+		#State.keys()[from] if from >= 0 else "<START>" ,
+		#State.keys()[to]
+		#],
+		#"velocity ",velocity
+		#)
 
 #状态的物理帧处理
 func tick_physics(state: State, delta: float) -> void:
-	if can_interact():
-		interact_play()
+	interact_play()
 	if state != State.SLIDE_FLOOR:
 		recover_energy(delta)
 	if invincible_timer_hurt.time_left >0.0:
@@ -361,24 +360,16 @@ func _on_hurtbox_hurt(_hitbox: HitBox) -> void:
 		return
 	pending_damage = damage_inti(_hitbox)
 
-
-func _on_button_pressed() -> void:
-	var _hitbox = HitBox.new()
-	_hitbox.global_position = self.global_position
-	pending_damage = damage_inti(_hitbox)
-
-
 func can_interact()-> bool:
 	return not interact_item.is_empty()\
-			and state_machine.current_state == State.DIE
+			and state_machine.current_state != State.DIE
 
 func interact_play()->void:
-	if interact_item.is_empty():
-		animation_interact.visible = false
-		animation_interact.stop()
-	else:
-		animation_interact.visible = true
+	animation_interact.visible = can_interact()
+	if animation_interact.visible:
 		animation_interact.play()
+	else:
+		animation_interact.stop()
 
 func register_interact(item: Interactable)->void:
 	if interact_item.has(item):
@@ -389,3 +380,9 @@ func erase_interact(item: Interactable)->void:
 	if interact_item.has(item):
 		interact_item.erase(item)
 	return
+
+
+func _on_button_pressed() -> void:
+	var _hitbox = HitBox.new()
+	_hitbox.global_position = self.global_position
+	pending_damage = damage_inti(_hitbox)

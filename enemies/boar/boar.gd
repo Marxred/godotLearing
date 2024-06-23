@@ -10,8 +10,8 @@ enum State{
 	DIE,
 }
 var walk_speed:float = 100.0
-var KNOCKBACK:float = 512.0
-var CHILL_TIME:float = 0.5
+var KNOCKBACK:float = 256.0
+var CHILL_TIME:float = 1.0
 var STILL_TIME:float = 1.5
 
 @onready var wall_checker: RayCast2D = $Graphic/WallChecker#判断wall
@@ -57,15 +57,18 @@ func get_next_state(state: State)-> State:
 				return State.IDLE
 		State.HITED:
 			if state_machine.state_time > CHILL_TIME:
-				return State.WALK
+				return State.IDLE
 	return state
 
 func transition_state(from: State, to: State)-> void:
+	if to == State.HITED:
+		player_checker.enabled = false
+	else:
+		player_checker.enabled = true
 	match to:
 		State.IDLE:
 			animation_player.play("idle")
 			if wall_checker.is_colliding():
-				print("direction ", direction)
 				direction = -direction
 			
 		State.RUN:
@@ -85,20 +88,16 @@ func transition_state(from: State, to: State)-> void:
 			var dam_dir:Vector2 = self.global_position\
 						.direction_to(pending_damage.source.global_position) 
 			pending_damage = null
-			#if dam_dir.x > 0:
-				#direction = Direction.RIGHT
-			#else:direction = Direction.LEFT
 			direction = dam_dir.sign().x as int
 			velocity = KNOCKBACK *-dam_dir
-			
 		State.DIE:
 			animation_player.play("die")
 			
-	print(name, " ",Engine.get_physics_frames(), " << from %s to %s >> " % [
-		State.keys()[from] if from >= 0 else "<START>" ,
-		State.keys()[to]],
-			"velocity ",velocity
-		)
+	#print(name, " ",Engine.get_physics_frames(), " << from %s to %s >> " % [
+		#State.keys()[from] if from >= 0 else "<START>" ,
+		#State.keys()[to]],
+			#"velocity ",velocity
+		#)
 
 
 func tick_physics(state: State, delta: float)-> void:
