@@ -10,7 +10,7 @@ enum State{
 	DIE,
 }
 var walk_speed:float = 100.0
-var KNOCKBACK:float = 256.0
+var KNOCKBACK:float = 128.0
 var CHILL_TIME:float = 1.0
 var STILL_TIME:float = 1.5
 
@@ -25,7 +25,7 @@ var pending_damage: Damage
 
 
 func _ready() -> void:
-	pass
+	super()
 
 
 func get_next_state(state: State)-> State:
@@ -60,7 +60,7 @@ func get_next_state(state: State)-> State:
 				return State.IDLE
 	return state
 
-func transition_state(from: State, to: State)-> void:
+func transition_state(_from: State, to: State)-> void:
 	if to == State.HITED:
 		player_checker.enabled = false
 	else:

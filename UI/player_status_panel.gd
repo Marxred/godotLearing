@@ -8,16 +8,23 @@ extends HBoxContainer
 
 
 func _ready() -> void:
+	if not stats:
+		stats = Game.player_stats
 	stats.health_changed.connect(_update_health_bar)
-	_update_health_bar()
+	_update_health_bar(true)
 	stats.energy_changed.connect(_update_energy_bar)
 	_update_energy_bar()
 
 
-func _update_health_bar()->void:
+func _update_health_bar(skip_ani:bool= false)->void:
 	health_box.value = stats.health / float(stats.MAX_HEALTH)
-	var tween:Tween = create_tween()
-	tween.tween_property(ease_health_box, "value", health_box.value, 0.8).set_trans(Tween.TRANS_SINE)
+	if skip_ani:
+		ease_health_box.value = health_box.value
+	else:
+		var tween:Tween = create_tween()
+		tween.tween_property(ease_health_box,"value",\
+					 health_box.value, 0.8)\
+			.set_trans(Tween.TRANS_SINE)
 
 func _update_energy_bar()->void:
 	energy_box.value = stats.energy / float(stats.MAX_ENERGY)

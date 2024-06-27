@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="HeroStoryWithGit"
-run/main_scene="res://world.tscn"
+run/main_scene="res://world/Forest.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://global/game.tscn"
 
 [display]
 

@@ -1,6 +1,21 @@
 class_name Player
 extends CharacterBody2D
 
+enum Direction{
+	LEFT = -1,
+	#MIDDLE = 0,
+	RIGHT = 1,
+}
+@export_group("Direction")#设定方向
+@export var direction :Direction= Direction.RIGHT:
+	set(v):
+		if is_zero_approx(v):
+			return
+		direction = v
+		if not is_node_ready():
+			await ready
+		graphic_2d.scale.x = direction
+
 
 enum State{
 	IDLE, RUN,
@@ -12,7 +27,7 @@ enum State{
 const state_to_animation_name:Dictionary={
 	State.IDLE:"idle", State.RUN:"run",
 	State.JUMP:"jump", State.FALL:"fall", State.LAND:"land", State.SLIDE_FLOOR:"slide_floor",
-	State.WALL_SLIDE:"wall_slide", State.WALL_JUMP:"wall_jump",
+	State.WALL_SLIDE:"slide_wall", State.WALL_JUMP:"jump",
 	State.ATTACK:"attack", State.ATTACK_COMBO:"attack_combo", State.ATTACK_CRITICAL:"attack_critical",
 	State.HURT:"hurt", State.DIE:"die",
 }
@@ -58,7 +73,7 @@ var KNOCKBACK:float = 256.0
 @onready var foot_checker: RayCast2D = $Graphic2D/FootChecker
 @onready var hurtbox: CollisionShape2D = $Graphic2D/Hurtbox/hurtbox
 @onready var hitbox: CollisionShape2D = $Graphic2D/HitBox/hitbox
-@onready var stats: Stats = $Stats
+@onready var stats: Stats = Game.player_stats
 var pending_damage: Damage
 @onready var graphic_2d: Node2D = $Graphic2D
 @onready var animation_playerStates: AnimationPlayer = $AnimationPlayerStates
@@ -82,7 +97,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		sliding_timer.start()
 	if event.is_action_pressed("interact")\
 	and can_interact():
-		interact_item.back().interact(self)
+		interact_item.back().interact()
 
 #状态变换判断
 ##先判断人物血量，
@@ -103,9 +118,9 @@ func get_next_state(state: State)-> State:
 	if should_attack(state):
 		return State.ATTACK
 	
-	#为接下来的判断准备
-	var direction: float = Input.get_axis("move_left","move_right")
-	var is_still : bool = is_zero_approx(direction) and is_zero_approx(velocity.x)
+	#为接下来的判断准备，有待修改
+	var movement: float = Input.get_axis("move_left","move_right")
+	var is_still : bool = is_zero_approx(movement) and is_zero_approx(velocity.x)
 	
 	match state:
 		State.IDLE:
@@ -231,18 +246,18 @@ func transition_state(from: State, to: State)-> void:
 		State.DIE:
 			animation_playerStates.play(state_to_animation_name.get(State.DIE))
 
-	#print(owner.name, 
-		#" [ %s ] << from %s to %s >> " % [
-		#Engine.get_physics_frames(),
-		#State.keys()[from] if from >= 0 else "<START>" ,
-		#State.keys()[to]
-		#],
-		#"velocity ",velocity
-		#)
+	print(owner.name, 
+		" [ %s ] << from %s to %s >> " % [
+		Engine.get_physics_frames(),
+		State.keys()[from] if from >= 0 else "<START>" ,
+		State.keys()[to]
+		],
+		"velocity ",velocity
+		)
 
 #状态的物理帧处理
 func tick_physics(state: State, delta: float) -> void:
-	interact_play()
+	interact_ani_play()
 	if state != State.SLIDE_FLOOR:
 		recover_energy(delta)
 	if invincible_timer_hurt.time_left >0.0:
@@ -278,7 +293,7 @@ func tick_physics(state: State, delta: float) -> void:
 		State.DIE:
 			move_self(default_gravity, delta)
 			if state_machine.state_time > 2.5:
-				get_tree().reload_current_scene()
+				Game.reload_current_scene()
 	move_and_slide()
 
 
@@ -332,11 +347,11 @@ func recover_energy(delta: float)->void:
 #玩家输入进行移动
 func move(gravity: float, delta: float)-> void:
 	var acceleration : float = FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
-	var direction = Input.get_axis("move_left","move_right")
-	velocity.x = move_toward(velocity.x, SPEED_RUN_MAX * direction, acceleration * delta)#x方向移动
+	var movement = Input.get_axis("move_left","move_right")
+	velocity.x = move_toward(velocity.x, SPEED_RUN_MAX * movement, acceleration * delta)#x方向移动
 	velocity.y += gravity * delta#y方向移动
-	if not is_zero_approx(direction):#翻转图像
-		graphic_2d.scale.x = -1 if direction < 0.0 else 1 
+	if sign(movement):#翻转图像
+		direction = sign(movement)
 
 #忽略玩家输入的移动
 func move_self(gravity: float, delta: float)-> void:
@@ -364,7 +379,7 @@ func can_interact()-> bool:
 	return not interact_item.is_empty()\
 			and state_machine.current_state != State.DIE
 
-func interact_play()->void:
+func interact_ani_play()->void:
 	animation_interact.visible = can_interact()
 	if animation_interact.visible:
 		animation_interact.play()
@@ -380,9 +395,3 @@ func erase_interact(item: Interactable)->void:
 	if interact_item.has(item):
 		interact_item.erase(item)
 	return
-
-
-func _on_button_pressed() -> void:
-	var _hitbox = HitBox.new()
-	_hitbox.global_position = self.global_position
-	pending_damage = damage_inti(_hitbox)

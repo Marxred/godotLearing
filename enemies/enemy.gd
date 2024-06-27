@@ -21,3 +21,8 @@ var acceration: float = max_speed / 0.2
 @onready var graphic: Node2D = $Graphic
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
+
+#将所有敌人都加入enemies组
+func _ready() -> void:
+	
+	add_to_group("enemies")
