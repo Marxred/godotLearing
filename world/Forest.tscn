@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ceg05gjjlsjwt"]
+[gd_scene load_steps=11 format=3 uid="uid://ceg05gjjlsjwt"]
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_wh2ra"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="2_4rxvh"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://world/entryPoint.gd" id="6_xm1gv"]
 [ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="7_a6j30"]
 [ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player/player_body_2d.tscn" id="8_rwcaf"]
+[ext_resource type="PackedScene" uid="uid://0423v7pf30d4" path="res://world/SaveStone.tscn" id="10_ug5m4"]
 
 [node name="Forest" type="Node2D"]
 script = ExtResource("1_wh2ra")
@@ -252,25 +253,31 @@ layer_2/name = "Foreground"
 layer_2/z_index = 1
 layer_2/tile_data = PackedInt32Array(851974, 589824, 3, 851976, 589824, 2, 851977, 458752, 3, 851978, 524288, 2, 851980, 589824, 3, 720911, 589824, 2, 917500, 589824, 2, 917502, 589824, 3, 851970, 655360, 2, 524324, 655360, 2, 524323, 524288, 3, 131094, 458752, 3, 327708, 458752, 3, 262171, 655360, 2, -65516, 524288, 3, -65520, 589824, 2, 2, 524288, 2, 655390, 524288, 2, 655391, 589824, 3, 786458, 655360, 2, 786454, 393216, 3)
 
-[node name="PortalMineRight" parent="." instance=ExtResource("5_4fj8m")]
+[node name="PortalMineRight" parent="map" instance=ExtResource("5_4fj8m")]
 position = Vector2(876, 62)
 scene_to = "res://world/DeepForest.tscn"
 entry_point_name = "EntryLeft"
 
-[node name="EntryRight" type="Marker2D" parent="PortalMineRight"]
+[node name="EntryRight" type="Marker2D" parent="map/PortalMineRight"]
 position = Vector2(-36, 50)
 script = ExtResource("6_xm1gv")
 direction = -1
 
-[node name="PortalMineLeft" parent="." instance=ExtResource("5_4fj8m")]
+[node name="PortalMineLeft" parent="map" instance=ExtResource("5_4fj8m")]
 position = Vector2(-88, 173)
-scale = Vector2(-1, 1)
+rotation = 3.14159
+scale = Vector2(1, -1)
 scene_to = "res://world/DeepForest.tscn"
 entry_point_name = "EntryRight"
 
-[node name="EntryLeft" type="Marker2D" parent="PortalMineLeft"]
+[node name="EntryLeft" type="Marker2D" parent="map/PortalMineLeft"]
 position = Vector2(-32, 51)
 script = ExtResource("6_xm1gv")
+
+[node name="Interactable" parent="map" instance=ExtResource("10_ug5m4")]
+position = Vector2(0, -8)
+rotation = 3.14159
+scale = Vector2(1, -1)
 
 [node name="Boar" parent="." instance=ExtResource("7_a6j30")]
 position = Vector2(351, 208)
@@ -279,7 +286,7 @@ position = Vector2(351, 208)
 position = Vector2(552, 144)
 
 [node name="Player2D" parent="." instance=ExtResource("8_rwcaf")]
-position = Vector2(496, 176)
+position = Vector2(96, -40)
 
 [node name="Player_camera" type="Camera2D" parent="Player2D"]
 limit_smoothed = true
@@ -293,3 +300,6 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 editor_draw_limits = true
 editor_draw_drag_margin = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.662452, 0.662452, 0.662452, 1)

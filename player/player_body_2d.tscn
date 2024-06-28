@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bx3xmo2otglfh"]
+[gd_scene load_steps=24 format=3 uid="uid://bx3xmo2otglfh"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_vrxgc"]
 [ext_resource type="Texture2D" uid="uid://605vviddb3ua" path="res://assets/Player/char_blue_2.png" id="2_y2p88"]
@@ -17,7 +17,6 @@
 [ext_resource type="Animation" uid="uid://w5euu5ertvnn" path="res://animations/player_animations/hurt.res" id="15_81y4t"]
 [ext_resource type="Animation" uid="uid://b50sdqj20uogx" path="res://animations/player_animations/die.res" id="16_4s1n6"]
 [ext_resource type="Animation" uid="uid://bvtyook018d2d" path="res://animations/player_animations/sliding.res" id="17_k6cna"]
-[ext_resource type="PackedScene" uid="uid://bh3w6vfy7f2j7" path="res://UI/player_status_panel.tscn" id="18_4tuia"]
 [ext_resource type="SpriteFrames" uid="uid://dixc68jhmttrr" path="res://animations/player_animations/interact.tres" id="20_ba878"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xneqw"]
@@ -223,6 +222,7 @@ position = Vector2(0, -14)
 shape = SubResource("CapsuleShape2D_0ot48")
 
 [node name="AnimationPlayerStates" type="AnimationPlayer" parent="."]
+deterministic = true
 root_node = NodePath("../CollisionShape")
 libraries = {
 "": SubResource("AnimationLibrary_ayu57")
@@ -248,14 +248,6 @@ one_shot = true
 [node name="SlidingTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
-
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="StatusPanel" parent="UI" instance=ExtResource("18_4tuia")]
-offset_left = 9.0
-offset_top = 9.0
-offset_right = 97.0
-offset_bottom = 35.0
 
 [node name="AnimationInteract" type="AnimatedSprite2D" parent="."]
 visible = false

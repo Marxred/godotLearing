@@ -258,7 +258,7 @@ func transition_state(from: State, to: State)-> void:
 #状态的物理帧处理
 func tick_physics(state: State, delta: float) -> void:
 	interact_ani_play()
-	if state != State.SLIDE_FLOOR:
+	if state in [State.IDLE, State.RUN, State.HURT]:
 		recover_energy(delta)
 	if invincible_timer_hurt.time_left >0.0:
 		sparkle_sprite()

@@ -63,8 +63,10 @@ func get_next_state(state: State)-> State:
 func transition_state(_from: State, to: State)-> void:
 	if to == State.HITED:
 		player_checker.enabled = false
+		hit_box.monitoring = false
 	else:
 		player_checker.enabled = true
+		hit_box.monitoring = true
 	match to:
 		State.IDLE:
 			animation_player.play("idle")

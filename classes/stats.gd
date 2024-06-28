@@ -23,3 +23,12 @@ signal energy_changed
 			return
 		else: energy = v
 		energy_changed.emit()
+
+
+func to_dict()->Dictionary:
+	var state: Array = [MAX_HEALTH, health, MAX_ENERGY, energy]
+	return {
+		"state" = state
+	}
+
+

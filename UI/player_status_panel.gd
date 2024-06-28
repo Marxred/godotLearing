@@ -7,7 +7,11 @@ extends HBoxContainer
 @onready var energy_box: TextureProgressBar = $VBoxContainer/EnergyBox
 
 
+
+
 func _ready() -> void:
+	if not Game.is_node_ready():
+		await Game.ready
 	if not stats:
 		stats = Game.player_stats
 	stats.health_changed.connect(_update_health_bar)

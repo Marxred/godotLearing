@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://f7p8lomogq75"]
+[gd_scene load_steps=5 format=3 uid="uid://f7p8lomogq75"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_jdr1r"]
 [ext_resource type="Script" path="res://classes/stats.gd" id="2_3tu15"]
+[ext_resource type="PackedScene" uid="uid://4u7ybqwql7lb" path="res://global/vigntte.tscn" id="3_21d65"]
+[ext_resource type="PackedScene" uid="uid://bh3w6vfy7f2j7" path="res://UI/player_status_panel.tscn" id="3_ujsgk"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_jdr1r")
@@ -17,3 +19,13 @@ layer = 99
 offset_right = 384.0
 offset_bottom = 216.0
 color = Color(0, 0, 0, 0)
+
+[node name="Vignette" parent="." instance=ExtResource("3_21d65")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StatusPanel" parent="UI" instance=ExtResource("3_ujsgk")]
+offset_left = 9.0
+offset_top = 9.0
+offset_right = 97.0
+offset_bottom = 35.0

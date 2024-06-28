@@ -327,10 +327,10 @@ _data = {
 size = Vector2(24, 22)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b4eh6"]
-size = Vector2(28, 8)
+size = Vector2(6, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_027it"]
-size = Vector2(28, 8)
+size = Vector2(6, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7qvqw"]
 size = Vector2(24, 22)
@@ -382,7 +382,7 @@ position = Vector2(0, -11)
 shape = SubResource("RectangleShape2D_b8edn")
 
 [node name="hitbox2" type="CollisionShape2D" parent="HitBox" index="1"]
-position = Vector2(4, -12)
+position = Vector2(15, -12)
 shape = SubResource("RectangleShape2D_b4eh6")
 
 [node name="Hurtbox" parent="." index="6"]
@@ -390,7 +390,7 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="hurtbox2" type="CollisionShape2D" parent="Hurtbox" index="0"]
-position = Vector2(4, -12)
+position = Vector2(15, -12)
 shape = SubResource("RectangleShape2D_027it")
 
 [node name="hurtbox" type="CollisionShape2D" parent="Hurtbox" index="1"]
