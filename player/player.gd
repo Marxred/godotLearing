@@ -59,6 +59,7 @@ const AIR_ACCELERATE_TIME : float = 0.2
 var AIR_ACCELERATION : float = SPEED_RUN_MAX / AIR_ACCELERATE_TIME
 var default_gravity : float = ProjectSettings.get("physics/2d/default_gravity")
 var KNOCKBACK:float = 256.0
+var first_tick: bool
 
 
 #初始化资源
@@ -187,6 +188,7 @@ func get_next_state(state: State)-> State:
 
 #状态转换函数，进行状态的初始化
 func transition_state(from: State, to: State)-> void:
+	first_tick = true
 	if from == State.SLIDE_FLOOR:
 		sliding_invincible_timer.stop()
 	if from in ATTACK_STATE and to not in ATTACK_STATE:
@@ -292,10 +294,10 @@ func tick_physics(state: State, delta: float) -> void:
 			
 		State.DIE:
 			move_self(default_gravity, delta)
-			if state_machine.state_time > 2.5:
-				Game.reload_current_scene()
+			#if not animation_playerStates.is_playing() and first_tick:
+				#Game.reload_current_scene()
+	first_tick = false
 	move_and_slide()
-
 
 #进行条件判断的函数们
 func should_wall_sliding_from_colliding()-> bool:
@@ -363,6 +365,9 @@ func slide(gravity: float, delta: float)->void:
 	var acceleration : float = SLIDING_FRICTION
 	velocity.x = move_toward(velocity.x, 0.0, acceleration * delta)
 	velocity.y += gravity * delta#y方向移动
+
+func die()->void:
+	Game.game_over_screen.show_game_over()
 
 func damage_inti(_hitbox: HitBox)->Damage:
 	var _pending_damage = Damage.new()

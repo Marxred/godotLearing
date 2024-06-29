@@ -1,11 +1,15 @@
 class_name Enemy
 extends CharacterBody2D
 
+
+signal died
+
 enum Direction{
 	LEFT = -1,
 	MIDDLE = 0,
 	RIGHT = 1,
 }
+
 
 #初始化变量
 var default_gravity : float = ProjectSettings.get("physics/2d/default_gravity")

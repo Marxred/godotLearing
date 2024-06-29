@@ -22,7 +22,7 @@ var STILL_TIME:float = 1.5
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var stats: Stats = $Stats
 var pending_damage: Damage
-
+var first_tick: bool = true
 
 func _ready() -> void:
 	super()
@@ -120,7 +120,9 @@ func tick_physics(state: State, delta: float)-> void:
 			move(0, delta)
 		State.DIE:
 			move(0, delta)
-			if not animation_player.is_playing():
+			if not animation_player.is_playing() and first_tick:
+				first_tick = false
+				died.emit()
 				queue_free()
 
 func move(speed: float, delta: float)-> void:

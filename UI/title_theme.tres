@@ -1,0 +1,45 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://chp2y3wryh2vl"]
+
+[ext_resource type="FontFile" uid="uid://b6y52ntumvi34" path="res://assets/font/SmileySans-Oblique.ttf" id="1_c5fi7"]
+[ext_resource type="Texture2D" uid="uid://dn8jr04wd88xl" path="res://assets/Assets/Base-01.png" id="2_k7q3a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qm3ik"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_up0mh"]
+texture = ExtResource("2_k7q3a")
+texture_margin_left = 3.0
+texture_margin_top = 3.0
+texture_margin_right = 3.0
+texture_margin_bottom = 3.0
+region_rect = Rect2(94, 14, 20, 20)
+
+[resource]
+default_font = ExtResource("1_c5fi7")
+Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 0.603922)
+Button/colors/font_pressed_color = Color(1, 1, 1, 0.466667)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/colors/icon_focus_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_normal_color = Color(1, 1, 1, 1)
+Button/colors/icon_pressed_color = Color(1, 1, 1, 1)
+Button/constants/h_separation = 4
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 4
+Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_c5fi7")
+Button/styles/disabled = SubResource("StyleBoxEmpty_qm3ik")
+Button/styles/focus = SubResource("StyleBoxTexture_up0mh")
+Button/styles/hover = SubResource("StyleBoxEmpty_qm3ik")
+Button/styles/normal = SubResource("StyleBoxEmpty_qm3ik")
+Button/styles/pressed = SubResource("StyleBoxEmpty_qm3ik")
+Label/font_sizes/font_size = 24

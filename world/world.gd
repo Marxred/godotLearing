@@ -7,6 +7,10 @@ extends Node2D
 @onready var player_camera: Camera2D = $Player2D/Player_camera
 @onready var player_2d: Player = $Player2D
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		Game.back_to_title()
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -58,7 +62,7 @@ func state_to_dict()->Dictionary:
 		}
 
 #根据世界状态字典配置场景状态
-func state_from_dict(scene_state: Dictionary)->void:
+func _state_from_dict(scene_state: Dictionary)->void:
 	update_enemy_state(scene_state.enemies_alive)
 	#for enemy in get_tree().get_nodes_in_group("enemies"):
 		#var path : String = get_path_to(enemy)

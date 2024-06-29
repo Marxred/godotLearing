@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgtxl0odfogkn"]
+
+[ext_resource type="Script" path="res://UI/game_end_screen.gd" id="1_8nsji"]
+[ext_resource type="FontFile" uid="uid://0j2klaf6vfd2" path="res://assets/font/SmileySans-Oblique.otf" id="2_ir40q"]
+
+[node name="GameEndScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8nsji")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.181073, 0.724026, 0.686722, 1)
+theme_override_colors/font_shadow_color = Color(0.785124, 0.681711, 0.686644, 1)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("2_ir40q")
+theme_override_font_sizes/font_size = 32
+text = "Test"
+horizontal_alignment = 1
+vertical_alignment = 1

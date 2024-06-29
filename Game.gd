@@ -4,6 +4,9 @@ extends Node
 
 
 #初始化变量
+@onready var game_over_screen: Control = $UI/GameOverScreen
+@onready var vignette: CanvasLayer = $Vignette
+@onready var ui: CanvasLayer = $UI
 @onready var color_rect: ColorRect = $CanvasLayer/ColorRect
 @onready var player_stats: Stats = $PlayerStats
 #引擎速度
@@ -14,6 +17,8 @@ extends Node
 #淡入淡出参数
 var fade_in_duration: float = 0.2
 var fade_out_duration: float = 0.1
+var first_scene: String =  "res://world/Forest.tscn"
+var title: String = "res://UI/title_screen.tscn"
 
 #game_state(内部数据)
 #scene_state = {
@@ -26,6 +31,19 @@ var fade_out_duration: float = 0.1
 									#scene_path,
 									#enemies_alive：[存活敌人对应场景树位置]
 								#]
+#}
+
+#scene_state2 = {
+					#"player":	{
+									#stats:[MAX_HEALTH, health, MAX_ENERGY, energy],
+									#position:Vector2(玩家全局位置x分量, 玩家全局位置y分量),
+									#direction:direction
+								#
+								# }
+					#"world_state":{
+									#scene_path: String
+									#enemies_alive：[存活敌人对应场景树位置]
+								#}
 #}
 
 #data(外部数据)
@@ -56,13 +74,74 @@ func fade(final_val: float, duration: float)->void:
 	await tween.finished
 
 func _ready() -> void:
-	pass
+	vignette.visible = false
+	ui.visible = false
 
+enum CHANGE_MODE{
+	ENTRY,
+	LOAD,
+	NEW,
+}
 
-#改变场景
-func change_scene_to(scene: String, entry_point: String)->void:
-	var tree = get_tree()
+# scene_state
+func total_change2(change_mode: CHANGE_MODE,scene_state2: Dictionary = {}, entry_point: String = "")->void:
 	#淡入并暂停场景树
+	var tree = get_tree()
+	tree.paused = true
+	await fade(1.0, fade_in_duration)
+
+	var new_scene: String = scene_state2.world_state.scene_path
+
+	match change_mode:
+		CHANGE_MODE.ENTRY:
+			# CHANGE_MODE.ENTRY 只使用scene_state.world_state 即scene_path, 根据新场景信息构造scene_state
+			if entry_point:
+				print("Invalid EntryPoint")
+				back_to_title()
+			#收集旧场景状态
+			var old_scene_name:String = tree.current_scene.scene_file_path
+			world_states[old_scene_name] = tree.current_scene.state_to_dict()
+			#切换新场景
+			tree.change_scene_to_file(new_scene)
+			await tree.tree_changed
+	
+			for entry_to:EntryPoint in tree.get_nodes_in_group("entry_points"):
+				if entry_to.name == entry_point:
+					scene_state2.player.stat = player_stats.to_dict().state
+					scene_state2.player.position = entry_to.global_position
+					scene_state2.player.direction = entry_to.direction
+					break
+			#加载新场景状态
+			if new_scene in world_states:
+				scene_state2.world_state = {
+												"enemies_alive": world_states[new_scene].enemies_alive
+										}
+				tree.current_scene.state_from_dict_new_test(scene_state2)
+			else:#第一次进入场景
+					tree.current_scene.update_player(scene_state2.player)
+
+		CHANGE_MODE.LOAD:
+			# load 使用scene_state
+			if scene_state2:
+				print("Invalid LOAD_DATA")
+				back_to_title()
+				#切换场景
+			tree.change_scene_to_file(new_scene)
+			await tree.tree_changed
+			tree.current_scene.state_from_dict_new_test(scene_state2)
+
+		CHANGE_MODE.NEW:
+			get_tree().change_scene_to_file(first_scene)
+
+	#淡出并启动场景树
+	tree.paused = false
+	await fade(0.0, fade_out_duration)
+
+
+#改变场景 world  to world
+func change_scene_to(scene: String, entry_point: String)->void:
+	#淡入并暂停场景树
+	var tree = get_tree()
 	tree.paused = true
 	await fade(1.0, fade_in_duration)
 	#收集旧场景状态
@@ -71,32 +150,37 @@ func change_scene_to(scene: String, entry_point: String)->void:
 	#切换新场景
 	tree.change_scene_to_file(scene)
 	await tree.tree_changed
+	var player:Array
 	for entry_to:EntryPoint in tree.get_nodes_in_group("entry_points"):
 		if entry_to.name == entry_point:
-			var current_scene:Node = tree.current_scene
-			current_scene.update_player([
+			player = [
 							[player_stats.MAX_HEALTH, 
 							player_stats.health, 
 							player_stats.MAX_ENERGY, 
 							player_stats.energy],
 						entry_to.global_position,
-						current_scene.player_2d.direction])
+						entry_to.direction]
 			break
 	#加载新场景状态
-	var new_scene_name:String = tree.current_scene.scene_file_path
-	if new_scene_name in world_states:#是否是第一次进入场景
-		tree.current_scene.state_from_dict(world_states[new_scene_name])
-	
+	if not scene in world_states:#第一次进入场景
+		tree.current_scene.update_player(player)
+	else:
+		var test: Dictionary = {"player": player,
+								"curent_world":[
+									scene,
+									world_states[scene].enemies_alive
+								]}
+		tree.current_scene.state_from_dict_new_test(test)
 	#淡出并启动场景树
 	tree.paused = false
 	await fade(0.0, fade_out_duration)
 
-#改变场景
+#改变场景 any to world
 func load_game()->void:
 	#读取数据
 	var file: FileAccess = FileAccess.open(SAV_PATH,FileAccess.READ)
 	if not file:
-		reload_current_scene()
+		back_to_title()
 	var json: String= file.get_as_text()
 	var data: Dictionary = JSON.parse_string(json)
 	if not data:
@@ -105,18 +189,38 @@ func load_game()->void:
 	world_states = data.world_states
 	file.close()
 	
-	#切换场景
+	#切换场景	接收上面的 data 转换为 scene_state
+	var scene_state = data_to_game_state(data)
 	var tree = get_tree()
 	#淡入并暂停场景树
 	tree.paused = true
 	await fade(1.0, fade_in_duration)
 	
 	#切换场景
-	var scene_state = data_to_game_state(data)
 	var load_scene:String = scene_state.curent_world[0]
 	tree.change_scene_to_file(load_scene)
 	await tree.tree_changed
 	tree.current_scene.state_from_dict_new_test(scene_state)
+	
+	vignette.visible = true
+	ui.visible = true
+	
+	#淡出并启动场景树
+	tree.paused = false
+	await fade(0.0, fade_out_duration)
+ 
+# title to first world
+func new_game()->void:
+	#切换场景
+	var tree = get_tree()
+	#淡入并暂停场景树
+	tree.paused = true
+	await fade(1.0, fade_in_duration)
+	
+	get_tree().change_scene_to_file(first_scene)
+	
+	vignette.visible = true
+	ui.visible = true
 	
 	#淡出并启动场景树
 	tree.paused = false
@@ -159,23 +263,37 @@ func save_game()->void:
 	var file: FileAccess = FileAccess.open(SAV_PATH, FileAccess.WRITE)
 	file.store_string(date_string)
 
-
-
 #player生命值耗尽后重启关卡
 func reload_current_scene()->void:
-	player_stats.health = player_stats.MAX_HEALTH
-	load_game()
+	#game_over_screen.visible = true
+	#await load_game()
+	#player_stats.health = player_stats.MAX_HEALTH
+	#game_over_screen.visible = false
+	game_over_screen.show_game_over()
 
 
-func _unhandled_input(_event: InputEvent) -> void:
-	if Input.is_action_pressed("save"):#1
-		save_game()
-	if Input.is_action_pressed("load"):#2
-		load_game()
+# world to title
+func back_to_title()->void:
+	#切换场景
+	var tree = get_tree()
+	#淡入并暂停场景树
+	tree.paused = true
+	await fade(1.0, fade_in_duration)
+	
+	get_tree().change_scene_to_file(title)
+	
+	vignette.visible = false
+	ui.visible = false
+	
+	#淡出并启动场景树
+	tree.paused = false
+	await fade(0.0, fade_out_duration)
 
+func has_save()->bool:
+	return FileAccess.file_exists(SAV_PATH)
 
-
-
+func end_game():
+	get_tree().change_scene_to_file("res://UI/game_end_screen.tscn")
 
 
 
