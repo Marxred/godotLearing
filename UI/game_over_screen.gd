@@ -1,8 +1,12 @@
 extends Control
 
 
+@export var bgm: AudioStream
+
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var label: Label = $Label
+
 
 
 func _ready() -> void:

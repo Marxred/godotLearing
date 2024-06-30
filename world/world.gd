@@ -2,15 +2,11 @@
 class_name World
 extends Node2D
 
+@export var bgm: AudioStream
 
 @onready var map: TileMap = $map
 @onready var player_camera: Camera2D = $Player2D/Player_camera
 @onready var player_2d: Player = $Player2D
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		Game.back_to_title()
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,10 +19,12 @@ func _ready() -> void:
 	player_camera.limit_left = mapBound.position.x * tileSize.x
 	player_camera.limit_right = mapBound.end.x * tileSize.x
 	player_camera.reset_smoothing()
-	print("DB ",player_camera.limit_top," ",
-			player_camera.limit_bottom," ",
-			player_camera.limit_left," ",
-			player_camera.limit_right)
+	if bgm:
+		SoundManager.play_bgm(bgm)
+	#print("DB ",player_camera.limit_top," ",
+			#player_camera.limit_bottom," ",
+			#player_camera.limit_left," ",
+			#player_camera.limit_right)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

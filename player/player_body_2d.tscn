@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bx3xmo2otglfh"]
+[gd_scene load_steps=27 format=3 uid="uid://bx3xmo2otglfh"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_vrxgc"]
 [ext_resource type="Texture2D" uid="uid://605vviddb3ua" path="res://assets/Player/char_blue_2.png" id="2_y2p88"]
@@ -17,7 +17,10 @@
 [ext_resource type="Animation" uid="uid://w5euu5ertvnn" path="res://animations/player_animations/hurt.res" id="15_81y4t"]
 [ext_resource type="Animation" uid="uid://b50sdqj20uogx" path="res://animations/player_animations/die.res" id="16_4s1n6"]
 [ext_resource type="Animation" uid="uid://bvtyook018d2d" path="res://animations/player_animations/sliding.res" id="17_k6cna"]
+[ext_resource type="PackedScene" uid="uid://c41wngnvaj2j0" path="res://UI/pause_screen.tscn" id="19_ppeus"]
 [ext_resource type="SpriteFrames" uid="uid://dixc68jhmttrr" path="res://animations/player_animations/interact.tres" id="20_ba878"]
+[ext_resource type="PackedScene" uid="uid://bh3w6vfy7f2j7" path="res://UI/player_status_panel.tscn" id="20_s1i4a"]
+[ext_resource type="PackedScene" uid="uid://dwpj2q1j660l" path="res://UI/game_over_screen.tscn" id="21_dioaw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xneqw"]
 size = Vector2(10, 28)
@@ -152,6 +155,18 @@ tracks/9/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../Graphic2D/HitBox/hitbox:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ayu57"]
 _data = {
@@ -254,5 +269,13 @@ visible = false
 position = Vector2(0, -44)
 sprite_frames = ExtResource("20_ba878")
 frame_progress = 0.171033
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="status_panel" parent="UI" instance=ExtResource("20_s1i4a")]
+
+[node name="GameOverScreen" parent="UI" instance=ExtResource("21_dioaw")]
+
+[node name="PauseScreen" parent="UI" instance=ExtResource("19_ppeus")]
 
 [connection signal="hurt" from="Graphic2D/Hurtbox" to="." method="_on_hurtbox_hurt"]

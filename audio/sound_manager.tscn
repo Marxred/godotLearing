@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://dfalp1n8g5st3"]
+
+[ext_resource type="Script" path="res://audio/SoundManager.gd" id="1_hvemy"]
+[ext_resource type="AudioStream" uid="uid://dle7l3xn8dsfu" path="res://audio/sfx/17_orc_atk_sword_1.wav" id="2_bjkfq"]
+[ext_resource type="AudioStream" uid="uid://n8qjgerbgwp" path="res://audio/sfx/12_human_jump_1.wav" id="3_7wo0o"]
+[ext_resource type="AudioStream" uid="uid://evp6e1o7ib7o" path="res://audio/sfx/14_human_death_spin.wav" id="3_g8dql"]
+[ext_resource type="AudioStream" uid="uid://buht1mtu3a72q" path="res://audio/sfx/impactGlass_medium_000.ogg" id="4_gphgp"]
+[ext_resource type="AudioStream" uid="uid://dxyga6w4iwnjx" path="res://audio/sfx/11_human_damage_3.wav" id="4_mng5c"]
+[ext_resource type="AudioStream" uid="uid://ullii7d04nyb" path="res://audio/sfx/impactGlass_heavy_000.ogg" id="5_pqpss"]
+
+[node name="SoundManager" type="Node"]
+script = ExtResource("1_hvemy")
+
+[node name="SFX" type="Node2D" parent="."]
+
+[node name="AttackCombo" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("2_bjkfq")
+bus = &"SFX"
+
+[node name="Attack" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("2_bjkfq")
+bus = &"SFX"
+
+[node name="AttackCritical" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("2_bjkfq")
+bus = &"SFX"
+
+[node name="Die" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_g8dql")
+bus = &"SFX"
+
+[node name="Hurt" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("4_mng5c")
+bus = &"SFX"
+
+[node name="Jump" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_7wo0o")
+bus = &"SFX"
+
+[node name="UIPress" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("4_gphgp")
+bus = &"SFX"
+
+[node name="UIFocus" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("5_pqpss")
+bus = &"SFX"
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"BGM"

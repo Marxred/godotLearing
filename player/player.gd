@@ -32,6 +32,8 @@ const state_to_animation_name:Dictionary={
 	State.HURT:"hurt", State.DIE:"die",
 }
 
+const sfx_name:Array = [null,null,"Jump",null,null,null,null,null,"Attack","AttackCombo","AttackCritical","Hurt","Die"]
+
 const GROUND_STATES : Array[State] =[
 	State.IDLE, State.RUN,  State.LAND,State.SLIDE_FLOOR,
 	State.ATTACK, State.ATTACK_COMBO, State.ATTACK_CRITICAL,]
@@ -80,6 +82,9 @@ var pending_damage: Damage
 @onready var animation_playerStates: AnimationPlayer = $AnimationPlayerStates
 @onready var animation_interact: AnimatedSprite2D = $AnimationInteract
 var interact_item: Array[Interactable]
+@onready var pause_screen: Control = $UI/PauseScreen
+@onready var status_panel: HBoxContainer = $UI/status_panel
+@onready var game_over_screen: Control = $UI/GameOverScreen
 
 
 func _ready() -> void:
@@ -99,6 +104,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact")\
 	and can_interact():
 		interact_item.back().interact()
+	if event.is_action_pressed("pause"):
+		pause_screen.show_pause()
 
 #状态变换判断
 ##先判断人物血量，
@@ -127,13 +134,9 @@ func get_next_state(state: State)-> State:
 		State.IDLE:
 			if not is_still:
 				return State.RUN
-			if attack_request_timer.time_left:
-				return State.ATTACK
 		State.RUN:
 			if is_still:
 				return State.IDLE
-			if attack_request_timer.time_left:
-				return State.ATTACK
 		
 		State.JUMP:
 			if velocity.y >= 0:
@@ -148,8 +151,6 @@ func get_next_state(state: State)-> State:
 		State.LAND:
 			if not animation_playerStates.is_playing() or not is_still:
 				return State.IDLE
-			if attack_request_timer.time_left:
-				return State.ATTACK
 		State.SLIDE_FLOOR:
 			if not animation_playerStates.is_playing() or is_on_wall():
 				return State.IDLE
@@ -191,8 +192,6 @@ func transition_state(from: State, to: State)-> void:
 	first_tick = true
 	if from == State.SLIDE_FLOOR:
 		sliding_invincible_timer.stop()
-	if from in ATTACK_STATE and to not in ATTACK_STATE:
-		hitbox.set_disabled(true) 
 	match to:
 		State.IDLE:
 			animation_playerStates.play(state_to_animation_name.get(State.IDLE))
@@ -201,6 +200,7 @@ func transition_state(from: State, to: State)-> void:
 		
 		State.JUMP:
 			animation_playerStates.play(state_to_animation_name.get(State.JUMP))
+			SoundManager.play_sfx(sfx_name[State.JUMP])
 			velocity.y = SPEED_JUMP
 			coyote_timer.stop()
 			jump_request_timer.stop()
@@ -230,11 +230,14 @@ func transition_state(from: State, to: State)-> void:
 		
 		State.ATTACK:
 			animation_playerStates.play(state_to_animation_name.get(State.ATTACK))
+			SoundManager.play_sfx(sfx_name[State.ATTACK])
 		State.ATTACK_COMBO:
 			animation_playerStates.play(state_to_animation_name.get(State.ATTACK_COMBO))
+			print("State.ATTACK_COMBO ",State.ATTACK_COMBO)
+			SoundManager.play_sfx(sfx_name[State.ATTACK_COMBO])
 		State.ATTACK_CRITICAL:
 			animation_playerStates.play(state_to_animation_name.get(State.ATTACK_CRITICAL))
-		
+			SoundManager.play_sfx(sfx_name[State.ATTACK_CRITICAL])
 		State.HURT:
 			invincible_timer_hurt.start(INVINCIBLE_TIME_HURT)
 			animation_playerStates.play(state_to_animation_name.get(State.HURT))
@@ -245,9 +248,10 @@ func transition_state(from: State, to: State)-> void:
 			graphic_2d.scale.x = dam_dir.sign().x if dam_dir \
 									else graphic_2d.scale.x
 			velocity = KNOCKBACK *-dam_dir
+			SoundManager.play_sfx(sfx_name[State.HURT])
 		State.DIE:
 			animation_playerStates.play(state_to_animation_name.get(State.DIE))
-
+			SoundManager.play_sfx(sfx_name[State.DIE])
 	print(owner.name, 
 		" [ %s ] << from %s to %s >> " % [
 		Engine.get_physics_frames(),
@@ -283,19 +287,17 @@ func tick_physics(state: State, delta: float) -> void:
 			move_self(default_gravity, delta)
 			
 		State.ATTACK:
-			enable_hitbox(0.3, 0.5)
+			#enable_hitbox(0.3, 0.5)
 			move_self(default_gravity, delta)
 		State.ATTACK_COMBO:
-			enable_hitbox(0.0, 0.1)
+			#enable_hitbox(0.0, 0.1)
 			move_self(default_gravity, delta)
 		State.ATTACK_CRITICAL:
-			enable_hitbox(0.1, 0.6)
+			#enable_hitbox(0.1, 0.6)
 			move_self(default_gravity, delta)
 			
 		State.DIE:
 			move_self(default_gravity, delta)
-			#if not animation_playerStates.is_playing() and first_tick:
-				#Game.reload_current_scene()
 	first_tick = false
 	move_and_slide()
 
@@ -367,7 +369,7 @@ func slide(gravity: float, delta: float)->void:
 	velocity.y += gravity * delta#y方向移动
 
 func die()->void:
-	Game.game_over_screen.show_game_over()
+	game_over_screen.show_game_over()
 
 func damage_inti(_hitbox: HitBox)->Damage:
 	var _pending_damage = Damage.new()

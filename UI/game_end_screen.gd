@@ -1,15 +1,18 @@
 extends Control
 
-@onready var label: Label = $Label
 
-
+@export var bgm: AudioStream
 const LINES:Array=[
-	"游戏结束了",
+	"本次游玩到此结束",
 	"如果遇到BUG",
-	"请联系我",
+	"请联系作者",
 ]
 var current_line: int = -1
 var tween:Tween
+
+
+@onready var label: Label = $Label
+
 
 func _ready() -> void:
 	show_line(0)

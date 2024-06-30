@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://0423v7pf30d4"]
 
-[ext_resource type="Script" path="res://SaveStone.gd" id="1_molv1"]
+[ext_resource type="Script" path="res://classes/SaveStone.gd" id="1_molv1"]
 [ext_resource type="Texture2D" uid="uid://ibp516w57ob3" path="res://assets/Assets/Props-Rocks.png" id="2_jalrc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d32hb"]

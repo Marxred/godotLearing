@@ -4,9 +4,6 @@ extends Node
 
 
 #初始化变量
-@onready var game_over_screen: Control = $UI/GameOverScreen
-@onready var vignette: CanvasLayer = $Vignette
-@onready var ui: CanvasLayer = $UI
 @onready var color_rect: ColorRect = $CanvasLayer/ColorRect
 @onready var player_stats: Stats = $PlayerStats
 #引擎速度
@@ -19,6 +16,8 @@ var fade_in_duration: float = 0.2
 var fade_out_duration: float = 0.1
 var first_scene: String =  "res://world/Forest.tscn"
 var title: String = "res://UI/title_screen.tscn"
+
+
 
 #game_state(内部数据)
 #scene_state = {
@@ -64,7 +63,7 @@ var title: String = "res://UI/title_screen.tscn"
 var world_states:Dictionary={}#游玩时的状态
 #存档文件和路径
 const SAV_PATH: String = "user://data.sav"##data.sav  :JSON格式游戏状态存档
-
+const CONFIG_PATH:String = "user://config.ini"
 
 #协程函数，调用需要使用await，直接调用则无视await tween.finished
 func fade(final_val: float, duration: float)->void:
@@ -74,8 +73,7 @@ func fade(final_val: float, duration: float)->void:
 	await tween.finished
 
 func _ready() -> void:
-	vignette.visible = false
-	ui.visible = false
+	load_config()
 
 enum CHANGE_MODE{
 	ENTRY,
@@ -202,8 +200,6 @@ func load_game()->void:
 	await tree.tree_changed
 	tree.current_scene.state_from_dict_new_test(scene_state)
 	
-	vignette.visible = true
-	ui.visible = true
 	
 	#淡出并启动场景树
 	tree.paused = false
@@ -217,10 +213,8 @@ func new_game()->void:
 	tree.paused = true
 	await fade(1.0, fade_in_duration)
 	
+	player_stats.health = player_stats.MAX_HEALTH
 	get_tree().change_scene_to_file(first_scene)
-	
-	vignette.visible = true
-	ui.visible = true
 	
 	#淡出并启动场景树
 	tree.paused = false
@@ -269,8 +263,7 @@ func reload_current_scene()->void:
 	#await load_game()
 	#player_stats.health = player_stats.MAX_HEALTH
 	#game_over_screen.visible = false
-	game_over_screen.show_game_over()
-
+	pass
 
 # world to title
 func back_to_title()->void:
@@ -282,8 +275,6 @@ func back_to_title()->void:
 	
 	get_tree().change_scene_to_file(title)
 	
-	vignette.visible = false
-	ui.visible = false
 	
 	#淡出并启动场景树
 	tree.paused = false
@@ -295,9 +286,35 @@ func has_save()->bool:
 func end_game():
 	get_tree().change_scene_to_file("res://UI/game_end_screen.tscn")
 
+func save_config()->void:
+	var config = ConfigFile.new()
 
+	config.set_value("audio", "master", SoundManager.get_volume(SoundManager.BUS.MASTER))
+	config.set_value("audio", "SFX", SoundManager.get_volume(SoundManager.BUS.SFX))
+	config.set_value("audio", "BGM", SoundManager.get_volume(SoundManager.BUS.BGM))
 
-
+	config.save(CONFIG_PATH)
+	
+func load_config()->void:
+	var config = ConfigFile.new()
+	config.load(CONFIG_PATH)
+	
+	SoundManager.set_volume(
+		SoundManager.BUS.MASTER,
+		config.get_value("audio", "master", 0.5)
+	)
+	SoundManager.set_volume(
+		SoundManager.BUS.SFX,
+		config.get_value("audio", "SFX", 1.0)
+	)
+	SoundManager.set_volume(
+		SoundManager.BUS.BGM,
+		config.get_value("audio", "BGM", 1.0)
+	)
+	
+	
+	
+	
 
 
 

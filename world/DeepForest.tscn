@@ -1,7 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://bntchy03g4wfk"]
+[gd_scene load_steps=22 format=3 uid="uid://bntchy03g4wfk"]
 
 [ext_resource type="Script" path="res://world/DeepForest.gd" id="1_6b0sd"]
 [ext_resource type="Texture2D" uid="uid://cq0ioocufy4d" path="res://assets/Assets/Tiles.png" id="1_mh1gk"]
+[ext_resource type="AudioStream" uid="uid://bjiowj5e721bt" path="res://audio/bgm/27 14 BOSS fixing LOOP.mp3" id="2_68p46"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="2_grxm7"]
 [ext_resource type="Texture2D" uid="uid://djh4o4lppnf55" path="res://assets/Trees/Green-Tree.png" id="3_fjugm"]
 [ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player/player_body_2d.tscn" id="3_r53ry"]
@@ -10,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cinur7grgfkwa" path="res://world/Portal.tscn" id="8_eg238"]
 [ext_resource type="Script" path="res://world/entryPoint.gd" id="9_3ec0q"]
 [ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="9_bx0wb"]
+[ext_resource type="PackedScene" uid="uid://0423v7pf30d4" path="res://world/SaveStone.tscn" id="10_lnirr"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wqh4m"]
 load_path = "res://.godot/imported/Background.png-1d5c37cd2cb55a47bf9072acc0b481eb.ctex"
@@ -2897,6 +2899,7 @@ sources/2 = SubResource("TileSetAtlasSource_4la4v")
 
 [node name="DeepForest" type="Node2D"]
 script = ExtResource("1_6b0sd")
+bgm = ExtResource("2_68p46")
 
 [node name="Decoration" type="Node2D" parent="."]
 metadata/_edit_group_ = true
@@ -3086,6 +3089,10 @@ entry_point_name = "EntryLeft"
 position = Vector2(-40, 48)
 script = ExtResource("9_3ec0q")
 direction = -1
+
+[node name="SaveStone" parent="map" instance=ExtResource("10_lnirr")]
+position = Vector2(312, 184)
+scale = Vector2(0.6, 0.6)
 
 [node name="Boar" parent="." instance=ExtResource("9_bx0wb")]
 position = Vector2(120, 96)

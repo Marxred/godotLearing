@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bjiowj5e721bt"
+path="res://.godot/imported/27 14 BOSS fixing LOOP.mp3-15f17c9c084dbc4323176a7020e3212a.mp3str"
+
+[deps]
+
+source_file="res://audio/bgm/27 14 BOSS fixing LOOP.mp3"
+dest_files=["res://.godot/imported/27 14 BOSS fixing LOOP.mp3-15f17c9c084dbc4323176a7020e3212a.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
