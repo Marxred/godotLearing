@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bntchy03g4wfk"]
+[gd_scene load_steps=23 format=3 uid="uid://bntchy03g4wfk"]
 
 [ext_resource type="Script" path="res://world/DeepForest.gd" id="1_6b0sd"]
 [ext_resource type="Texture2D" uid="uid://cq0ioocufy4d" path="res://assets/Assets/Tiles.png" id="1_mh1gk"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://world/entryPoint.gd" id="9_3ec0q"]
 [ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="9_bx0wb"]
 [ext_resource type="PackedScene" uid="uid://0423v7pf30d4" path="res://world/SaveStone.tscn" id="10_lnirr"]
+[ext_resource type="Script" path="res://UI/ShakyCamera.gd" id="13_464yr"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wqh4m"]
 load_path = "res://.godot/imported/Background.png-1d5c37cd2cb55a47bf9072acc0b481eb.ctex"
@@ -3119,5 +3120,6 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 editor_draw_limits = true
 editor_draw_drag_margin = true
+script = ExtResource("13_464yr")
 
 [connection signal="died" from="Boar3" to="." method="_on_boar_3_died"]

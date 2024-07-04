@@ -190,6 +190,7 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_vrxgc")
 direction = -1
+can_combo = true
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_m6wm8")
@@ -279,3 +280,4 @@ frame_progress = 0.171033
 [node name="PauseScreen" parent="UI" instance=ExtResource("19_ppeus")]
 
 [connection signal="hurt" from="Graphic2D/Hurtbox" to="." method="_on_hurtbox_hurt"]
+[connection signal="hit" from="Graphic2D/HitBox" to="." method="_on_hit_box_hit"]

@@ -62,6 +62,7 @@ var AIR_ACCELERATION : float = SPEED_RUN_MAX / AIR_ACCELERATE_TIME
 var default_gravity : float = ProjectSettings.get("physics/2d/default_gravity")
 var KNOCKBACK:float = 256.0
 var first_tick: bool
+@export var can_combo: bool = false
 
 
 #初始化资源
@@ -106,6 +107,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		interact_item.back().interact()
 	if event.is_action_pressed("pause"):
 		pause_screen.show_pause()
+	
 
 #状态变换判断
 ##先判断人物血量，
@@ -192,6 +194,8 @@ func transition_state(from: State, to: State)-> void:
 	first_tick = true
 	if from == State.SLIDE_FLOOR:
 		sliding_invincible_timer.stop()
+	#if from in ATTACK_STATE and to not in ATTACK_STATE:
+		#hitbox.disabled = true
 	match to:
 		State.IDLE:
 			animation_playerStates.play(state_to_animation_name.get(State.IDLE))

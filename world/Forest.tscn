@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ceg05gjjlsjwt"]
+[gd_scene load_steps=13 format=3 uid="uid://ceg05gjjlsjwt"]
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_wh2ra"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="2_4rxvh"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="7_a6j30"]
 [ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player/player_body_2d.tscn" id="8_rwcaf"]
 [ext_resource type="PackedScene" uid="uid://0423v7pf30d4" path="res://world/SaveStone.tscn" id="10_ug5m4"]
+[ext_resource type="Script" path="res://UI/ShakyCamera.gd" id="12_a5gyn"]
 
 [node name="Forest" type="Node2D"]
 script = ExtResource("1_wh2ra")
@@ -302,6 +303,7 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 editor_draw_limits = true
 editor_draw_drag_margin = true
+script = ExtResource("12_a5gyn")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.662452, 0.662452, 0.662452, 1)
