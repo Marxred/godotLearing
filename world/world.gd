@@ -1,4 +1,4 @@
-#世界节点，进行世界初始化，将世界状态转换为字典
+ #世界节点，进行世界初始化，将世界状态转换为字典
 class_name World
 extends Node2D
 
@@ -48,7 +48,6 @@ func update_enemy_state(enemies_alive: Array)->void:
 		if path not in enemies_alive:
 			enemy.queue_free()
 
-
 #以字典形式储存世界状态
 func state_to_dict()->Dictionary:
 	var enemies_alive:=[]
@@ -88,7 +87,6 @@ func state_from_dict_new_test(scene_state: Dictionary)->void:
 									#enemies_alive：[存活敌人对应场景树位置]
 								#]
 #}
-
 
 #data => {
 # "world_states" => 世界状态

@@ -138,3 +138,4 @@ func _on_hurtbox_hurt(hitbox: HitBox) -> void:
 	pending_damage = Damage.new()
 	pending_damage.damage = 1
 	pending_damage.source = hitbox
+	

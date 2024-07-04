@@ -215,7 +215,7 @@ func transition_state(from: State, to: State)-> void:
 			sliding_invincible_timer.start(INVINCIBLE_TIME_FLOOR_SLIDING)
 			sliding_timer.stop()
 			stats.energy -= 1.0
-			velocity.x = graphic_2d.scale.x * SLIDING_SPEED
+			velocity.x = direction * SLIDING_SPEED
 		
 		State.WALL_SLIDE:
 			animation_playerStates.play(state_to_animation_name.get(State.WALL_SLIDE))
@@ -225,7 +225,7 @@ func transition_state(from: State, to: State)-> void:
 			var wall_normall_direction : int = get_wall_normall_direction()
 			velocity = SPEED_WALL_JUMP
 			velocity.x *= wall_normall_direction
-			graphic_2d.scale.x = wall_normall_direction
+			direction = wall_normall_direction
 			jump_request_timer.stop()
 		
 		State.ATTACK:
@@ -245,9 +245,10 @@ func transition_state(from: State, to: State)-> void:
 			var dam_dir:Vector2 = self.global_position.direction_to(\
 							pending_damage.source.global_position)
 			pending_damage = null
-			graphic_2d.scale.x = dam_dir.sign().x if dam_dir \
-									else graphic_2d.scale.x
+			direction = dam_dir.sign().x if dam_dir \
+									else direction
 			velocity = KNOCKBACK *-dam_dir
+			Game.shake_camera(5)
 			SoundManager.play_sfx(sfx_name[State.HURT])
 		State.DIE:
 			animation_playerStates.play(state_to_animation_name.get(State.DIE))
@@ -402,3 +403,12 @@ func erase_interact(item: Interactable)->void:
 	if interact_item.has(item):
 		interact_item.erase(item)
 	return
+
+
+func _on_hit_box_hit(hurtbox):
+	Game.shake_camera(2)
+	
+	Engine.time_scale = 0.01
+	await get_tree().create_timer(0.08, true, false, true).timeout
+	
+	Engine.time_scale = 1.0

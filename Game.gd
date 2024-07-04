@@ -2,6 +2,7 @@
 #储存全局游戏参数
 extends Node
 
+signal camera_should_shake(strength_amount: float)
 
 #初始化变量
 @onready var color_rect: ColorRect = $CanvasLayer/ColorRect
@@ -312,9 +313,9 @@ func load_config()->void:
 		config.get_value("audio", "BGM", 1.0)
 	)
 	
-	
-	
-	
+
+func shake_camera(amount: float)->void:
+	camera_should_shake.emit(amount)
 
 
 
