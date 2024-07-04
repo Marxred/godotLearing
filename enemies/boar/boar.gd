@@ -94,6 +94,8 @@ func transition_state(_from: State, to: State)-> void:
 			velocity = KNOCKBACK *-dam_dir
 		State.DIE:
 			animation_player.play("die")
+			player_checker.enabled = false
+			hit_box.monitoring = false;
 			
 	#print(name, " ",Engine.get_physics_frames(), " << from %s to %s >> " % [
 		#State.keys()[from] if from >= 0 else "<START>" ,
@@ -121,6 +123,7 @@ func tick_physics(state: State, delta: float)-> void:
 		State.DIE:
 			move(0, delta)
 			if not animation_player.is_playing() and first_tick:
+				print("boar died")
 				first_tick = false
 				died.emit()
 				queue_free()

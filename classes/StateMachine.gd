@@ -1,7 +1,6 @@
 class_name StateMachine
 extends Node
 
-
 #与人物get_next_state配合使用,实现控制同一状态的重复进入
 var ENTER_CURRENT_STATE_AGAIN:bool = false
 #记录进入一个状态的时间
