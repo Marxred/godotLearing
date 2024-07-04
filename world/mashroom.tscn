@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://bfipuumw02srg"]
+
+[ext_resource type="Texture2D" uid="uid://ibp516w57ob3" path="res://assets/Assets/Props-Rocks.png" id="1_lnlu1"]
+
+[sub_resource type="Gradient" id="Gradient_du5yl"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_juoo7"]
+gradient = SubResource("Gradient_du5yl")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="Animation" id="Animation_wkqly"]
+resource_name = "sparkle"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PointLight2D:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.8, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_a0yel"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PointLight2D:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r44qy"]
+_data = {
+"RESET": SubResource("Animation_a0yel"),
+"sparkle": SubResource("Animation_wkqly")
+}
+
+[node name="mashroom" type="Sprite2D"]
+texture = ExtResource("1_lnlu1")
+region_enabled = true
+region_rect = Rect2(67, 80, 28, 32)
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(-7, -10)
+energy = 0.0
+texture = SubResource("GradientTexture2D_juoo7")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_r44qy")
+}
+autoplay = "sparkle"

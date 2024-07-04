@@ -3,9 +3,9 @@ extends Control
 
 @export var bgm: AudioStream
 const LINES:Array=[
-	"本次游玩到此结束",
-	"如果遇到BUG",
-	"请联系作者",
+	"游戏就到这里了",
+	"如果遇到BUG，",
+	"还请联系作者",
 ]
 var current_line: int = -1
 var tween:Tween

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ceg05gjjlsjwt"]
+[gd_scene load_steps=14 format=3 uid="uid://ceg05gjjlsjwt"]
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_wh2ra"]
 [ext_resource type="Texture2D" uid="uid://ctie83pwsvguq" path="res://assets/Background/Background.png" id="2_4rxvh"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://world/entryPoint.gd" id="6_xm1gv"]
 [ext_resource type="PackedScene" uid="uid://dx1kprraoeemj" path="res://enemies/boar/boar.tscn" id="7_a6j30"]
 [ext_resource type="PackedScene" uid="uid://bx3xmo2otglfh" path="res://player/player_body_2d.tscn" id="8_rwcaf"]
+[ext_resource type="PackedScene" uid="uid://bfipuumw02srg" path="res://world/mashroom.tscn" id="10_ihski"]
 [ext_resource type="PackedScene" uid="uid://0423v7pf30d4" path="res://world/SaveStone.tscn" id="10_ug5m4"]
 [ext_resource type="Script" path="res://UI/ShakyCamera.gd" id="12_a5gyn"]
 
@@ -277,10 +278,13 @@ entry_point_name = "EntryRight"
 position = Vector2(-32, 51)
 script = ExtResource("6_xm1gv")
 
-[node name="Interactable" parent="map" instance=ExtResource("10_ug5m4")]
+[node name="SaveStone" parent="map" instance=ExtResource("10_ug5m4")]
 position = Vector2(0, -8)
 rotation = 3.14159
 scale = Vector2(1, -1)
+
+[node name="mashroom" parent="map/SaveStone" instance=ExtResource("10_ihski")]
+position = Vector2(-34, 11.0001)
 
 [node name="Boar" parent="." instance=ExtResource("7_a6j30")]
 position = Vector2(351, 208)
@@ -289,7 +293,7 @@ position = Vector2(351, 208)
 position = Vector2(552, 144)
 
 [node name="Player2D" parent="." instance=ExtResource("8_rwcaf")]
-position = Vector2(96, -16)
+position = Vector2(61, 18)
 
 [node name="Player_camera" type="Camera2D" parent="Player2D"]
 limit_smoothed = true

@@ -249,7 +249,7 @@ func transition_state(from: State, to: State)-> void:
 			var dam_dir:Vector2 = self.global_position.direction_to(\
 							pending_damage.source.global_position)
 			pending_damage = null
-			direction = dam_dir.sign().x if dam_dir \
+			direction = int(dam_dir.sign().x) if dam_dir \
 									else direction
 			velocity = KNOCKBACK *-dam_dir
 			Game.shake_camera(5)
@@ -409,7 +409,7 @@ func erase_interact(item: Interactable)->void:
 	return
 
 
-func _on_hit_box_hit(hurtbox):
+func _on_hit_box_hit(_hurtbox):
 	Game.shake_camera(2)
 	
 	Engine.time_scale = 0.01
